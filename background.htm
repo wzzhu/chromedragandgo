@@ -1,0 +1,36 @@
+<html><head>
+<script>
+chrome.extension.onConnect.addListener(function(port) {
+  port.onMessage.addListener(function(data) {
+    if (data.message == 'tab') {
+	  chrome.tabs.getSelected(null, function(tab){
+	    var idx = tab.index;
+	    var new_idx = idx + data.x_dir;
+		if (new_idx < 0) {
+		  new_idx = 0;
+		}
+	    var fg = (data.y_dir == 1);
+	    var re = /https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w/_\.]*(\?\S+)?)?)?/;
+	    var matches = data.values.match(re);
+	    var link;
+	    if (matches) {
+	      link = matches[0];	    
+	    } else {
+		  var engine = localStorage["search_engine"];
+	      link = engine + data.values;
+	    }
+	    chrome.tabs.create({url : link, selected : fg, index : new_idx});});
+	}
+  });
+});
+
+function restore_options() {
+  var engine = localStorage["search_engine"];
+  if (!engine) {
+    localStorage["search_engine"] = "http://www.google.com/search?&q=";
+  }  
+}
+</script>
+</head>
+<body onload="restore_options()">
+</body></html>
