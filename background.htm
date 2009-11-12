@@ -10,7 +10,7 @@ chrome.extension.onConnect.addListener(function(port) {
 		  new_idx = 0;
 		}
 	    var fg = (data.y_dir == 1);
-	    var re = /https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w/_\.]*(\?\S+)?)?)?/;
+	    var re = /https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w/_\-\.]*(\?\S+)?)?)?/;
 	    var matches = data.values.match(re);
 	    var link;
 	    if (matches) {
