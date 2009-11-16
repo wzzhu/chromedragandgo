@@ -9,6 +9,6 @@
    "permissions" : ["tabs"],
    "description": "Drag and Go", 
    "name": "Drag and Go",
-   "options_page": "options.html",
-   "version": "1.0.0.0"
+   "options_page": "http://chromedragandgo.googlecode.com/files/options.html",
+   "version": "1.2.0.0"
 }
