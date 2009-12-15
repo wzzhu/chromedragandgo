@@ -23,8 +23,13 @@ document.addEventListener('drop', function (e) {
 	if (e.screenY < start_y) {
 	  y_dir = -1;
 	}
-	chrome.extension.connect().postMessage({
-	  message: 'tab', values: e.dataTransfer.getData('Text'),
-	  x_dir: x_dir, y_dir: y_dir});
-	return false;
+  var data = e.dataTransfer.getData('URL');
+  if (!data) {
+    data = e.dataTransfer.getData('Text');
+  }
+  if (data) {
+    chrome.extension.connect().postMessage({
+      message: 'tab', values: data, x_dir: x_dir, y_dir: y_dir});
+    return false;
+  }
 });
