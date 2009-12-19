@@ -9,6 +9,8 @@
    "permissions" : ["tabs"],
    "description": "Drag and Go", 
    "name": "Drag and Go",
+   "icons": {"16": "icon16.jpg", "32": "icon32.jpg",
+             "48": "icon48.jpg", "128": "icon128.jpg"},
    "options_page": "options.html",
    "update_url": "http://chromedragandgo.googlecode.com/files/updates.xml",
    "version": "1.3"
