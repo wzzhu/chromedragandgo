@@ -2,7 +2,7 @@
    "background_page": "background.htm",
    "content_scripts": [ {
       "js": [ "dragandgo.js" ],
-      "matches": [ "http://*/*", "https://*/*", "file://*/*", "ftp://*/*" ],
+      "matches": [ "http://*/*", "https://*/*", "ftp://*/*" ],
       "permissions": [ "tabs" ],
       "run_at": "document_start"
    } ],
