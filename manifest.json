@@ -7,9 +7,9 @@
       "run_at": "document_start"
    } ],
    "permissions" : ["tabs"],
-   "description": "Drag and Go", 
+   "description": "Drag and Go",
    "name": "Drag and Go",
-   "icons": {"48": "icon48.jpg", "128": "icon128.jpg"},
+   "icons": {"32": "icon32.jpg", "48": "icon48.jpg", "128": "icon128.jpg"},
    "options_page": "options.html",
    "version": "1.3"
 }
