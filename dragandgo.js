@@ -27,6 +27,7 @@ function getDragSelection(e) {
   if (parent_node) {
 		if (selection && selection.baseNode &&
 		    (selection.baseNode.baseURI == e.srcElement.baseURI) &&
+		    (selection.baseNode.data== e.srcElement.data) &&
 				(selection.baseOffset != selection.extentOffset)) {
 		  data = selection.toString();
 		} else {
