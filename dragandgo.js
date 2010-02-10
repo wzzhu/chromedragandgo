@@ -9,7 +9,10 @@ function dragOver (e) {
   return false;
 }
 
+mouse_style = "default";
 function dragStart(e) {
+  mouse_style = document.body.style.cursor;
+  document.body.style.cursor = "move";
   start_x = e.screenX;
   start_y = e.screenY;
 }
@@ -19,6 +22,8 @@ function dragEnd(e) {
     // The drop event is from external, keep original action.
     return true;
   }
+  document.body.style.cursor = mouse_style;
+  mouse_style = "default";
   var x_dir = 1;
   if (e.preventDefault) {
     e.preventDefault ();
@@ -32,9 +37,13 @@ function dragEnd(e) {
   }
   start_x = -1;
   start_y = -1;
-  var data = e.dataTransfer.getData('URL');
-  if (!data) {
+  if (e.srcElement.parentNode.nodeName == "A") {
+    data = e.srcElement.parentNode.href;
+  } else {
     data = e.dataTransfer.getData('Text');
+    if (!data) {
+      data = window.getSelection().toString();
+    }
   }
   if (data) {
     chrome.extension.connect().postMessage({
