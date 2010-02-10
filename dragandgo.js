@@ -20,13 +20,17 @@ function dragStart(e) {
 function getDragSelection(e) {
 	var data;
 	var selection = window.getSelection();
-  if (e.srcElement.parentNode.nodeName == "A") {
+	var parent_node = e.srcElement.parentNode;
+	while(parent_node && parent_node.nodeName != "A") {
+	  parent_node = parent_node.parentNode;
+	}
+  if (parent_node) {
 		if (selection && selection.baseNode &&
 		    (selection.baseNode.baseURI == e.srcElement.baseURI) &&
 				(selection.baseOffset != selection.extentOffset)) {
 		  data = selection.toString();
 		} else {
-			data = e.srcElement.parentNode.href;
+			data = parent_node.href;
 		}
   } else {
     data = e.dataTransfer.getData('Text');
