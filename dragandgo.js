@@ -17,6 +17,25 @@ function dragStart(e) {
   start_y = e.screenY;
 }
 
+function getDragSelection(e) {
+	var data;
+	var selection = window.getSelection();
+  if (e.srcElement.parentNode.nodeName == "A") {
+		if (selection && (selection.baseNode.baseURI == e.srcElement.baseURI) &&
+				(selection.baseOffset != selection.extentOffset)) {
+		  data = selection.toString();
+		} else {
+			data = e.srcElement.parentNode.href;
+		}
+  } else {
+    data = e.dataTransfer.getData('Text');
+    if (!data) {
+      data = selection.toString();
+    }
+  }
+	return data;
+}
+
 function dragEnd(e) {
   if (start_x == -1 || start_y == -1) {
     // The drop event is from external, keep original action.
@@ -37,14 +56,7 @@ function dragEnd(e) {
   }
   start_x = -1;
   start_y = -1;
-  if (e.srcElement.parentNode.nodeName == "A") {
-    data = e.srcElement.parentNode.href;
-  } else {
-    data = e.dataTransfer.getData('Text');
-    if (!data) {
-      data = window.getSelection().toString();
-    }
-  }
+	var data = getDragSelection(e);
   if (data) {
     chrome.extension.connect().postMessage({
       message: 'tab', values: data, x_dir: x_dir, y_dir: y_dir});
