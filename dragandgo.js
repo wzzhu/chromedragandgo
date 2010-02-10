@@ -21,7 +21,8 @@ function getDragSelection(e) {
 	var data;
 	var selection = window.getSelection();
   if (e.srcElement.parentNode.nodeName == "A") {
-		if (selection && (selection.baseNode.baseURI == e.srcElement.baseURI) &&
+		if (selection && selection.baseNode &&
+		    (selection.baseNode.baseURI == e.srcElement.baseURI) &&
 				(selection.baseOffset != selection.extentOffset)) {
 		  data = selection.toString();
 		} else {
