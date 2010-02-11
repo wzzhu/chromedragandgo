@@ -1,41 +1,57 @@
 <html><head>
 <script>
-chrome.extension.onConnect.addListener(function(port) {
-  port.onMessage.addListener(function(data) {
-    if (data.message == 'tab') {
-	    chrome.tabs.getSelected(null, function(tab){
-	      var new_idx = tab.index;
-				if (data.x_dir > 0) {
-          ++new_idx;
-	      }
-	      var fg = (data.y_dir == 1);
-	      var re = /https?:\/\/([-\w\.]+)+(:\d+)?(\/([-\w\/_~\.,#%=\*:]*(\?\S+)?)?)?/;
-        var re2 = /www\.[-\w\.]+(\/[\S]*)*/;
-	      var matches = data.values.match(re);
-	      var link;
-	      if (matches) {
-	        link = matches[0];	    
-	      } else {
-          matches = data.values.match(re2);
-					if (matches) {
-						link = "http://" + matches[0];
-					} else {
-		        var engine = localStorage["search_engine"];
-	          link = engine + data.values;
-					}
-	      }
-	      chrome.tabs.create({url : link, selected : fg, index : new_idx});});
-	}
-  });
-});
+// Extract the link from the given text.
+function getTextLink(text) {
+  var re = /https?:\/\/([-\w\.]+)+(:\d+)?(\/([-\w\/_~\.,#%=\*:]*(\?\S+)?)?)?/;
+  var re2 = /www\.[-\w\.]+(\/[\S]*)*/;
+  var matches = text.match(re);
+  var link;
+  if (matches) {
+    link = matches[0];
+  } else {
+    matches = text.match(re2);
+    if (matches) {
+      link = "http://" + matches[0];
+    } else {
+      var engine = localStorage["search_engine"];
+      link = engine + text;
+    }
+  }
+  return link;
+}
 
-function restore_options() {
+function tabAction(tab, drag_data) {
+  var new_idx = tab.index;
+  if (drag_data.x_dir > 0) {
+    ++new_idx;
+  }
+  var fg = (drag_data.y_dir == 1);
+  if (drag_data.selection.type == "text") {
+    var link = getTextLink(drag_data.selection.data);
+    chrome.tabs.create({url: link, selected: fg, index: new_idx});
+  }
+}
+
+function dragAndGoListner(data) {
+  if (data.message == 'drag_and_go') {
+    chrome.tabs.getSelected(null, function(tab) {
+      tabAction(tab, data)});
+  }
+}
+
+function connectionHandler(port) {
+  port.onMessage.addListener(dragAndGoListner);
+}
+
+chrome.extension.onConnect.addListener(connectionHandler);
+
+function restoreOptions() {
   var engine = localStorage["search_engine"];
   if (!engine) {
     localStorage["search_engine"] = "http://www.google.com/search?&q=";
-  }  
+  }
 }
 </script>
 </head>
-<body onload="restore_options()">
+<body onload="restoreOptions()">
 </body></html>
