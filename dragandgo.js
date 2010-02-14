@@ -23,14 +23,12 @@ function getDragSelection(e) {
     parent_node = parent_node.parentNode;
   }
   if (parent_node) {
-    if (selection && selection.baseNode &&
-        (selection.baseNode.baseURI == e.srcElement.baseURI) &&
-        (selection.baseNode.data== e.srcElement.data) &&
-        (selection.baseOffset != selection.extentOffset)) {
-      data = selection.toString();
-    } else {
+    if (parent_node.href.substr(0, 11) != "javascript:") {
       data = parent_node.href;
     }
+  } else if (e.srcElement.nodeName == "IMG") {
+    data_type = "img";
+    data = e.srcElement.src;
   } else {
     data = e.dataTransfer.getData('Text');
     if (!data) {

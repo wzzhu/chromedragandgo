@@ -4,7 +4,7 @@
       "js": [ "dragandgo.js" ],
       "matches": [ "http://*/*", "https://*/*", "ftp://*/*" ],
       "permissions": [ "tabs" ],
-      "run_at": "document_end"
+      "run_at": "document_start"
    } ],
    "permissions": ["tabs"],
    "description": "Drag and Go",
