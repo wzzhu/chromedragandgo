@@ -3,10 +3,11 @@ var drag_and_go = {
   drag_selection: {type: "text", data: ""},
   start_x: -1,
   start_y: -1,
+  local_options: {},
 
   // Extract the link from the given text if any.
   // Otherwise return empty string.
-	getTextLink: function(text) {
+  getTextLink: function(text) {
     var re = /https?:\/\/([-\w\.]+)+(:\d+)?(\/([-\w\/_~\.,#%=\*:]*(\?\S+)?)?)?/;
     var re2 = /www\.[-\w\.]+(\/[\S]*)*/;
     var link = "";
@@ -47,22 +48,26 @@ var drag_and_go = {
   },
   
   dragStart: function(e) {
-    in_drag = true;
-    start_x = e.pageX;
-    start_y = e.pageY;
-    drag_selection = drag_and_go.getDragSelection(e);
-    if (drag_selection.type == "text") {
-      var link = drag_and_go.getTextLink(drag_selection.data);
+    if (this.local_options["alt_key"] == "true" && e.altKey ||
+        this.local_options["ctrl_key"] == "true" && e.ctrlKey) {
+      return true;
+    }
+    this.in_drag = true;
+    this.start_x = e.pageX;
+    this.start_y = e.pageY;
+    this.drag_selection = this.getDragSelection(e);
+    if (this.drag_selection.type == "text") {
+      var link = this.getTextLink(this.drag_selection.data);
       if (link != "") {
-	drag_selection.type = "link";
-	drag_selection.text = link;
+	this.drag_selection.type = "link";
+	this.drag_selection.text = link;
       }
     }
     return false;
   },
 
   dragOver: function(e) {
-    if (!in_drag) {
+    if (!this.in_drag) {
       return true;
     }
     if (e.preventDefault) {
@@ -72,26 +77,37 @@ var drag_and_go = {
   },
 
   dragEnd: function(e) {
-    if (!in_drag) {
+    if (!this.in_drag) {
       return true;
     }
-    in_drag = false;
+    this.in_drag = false;
+    var d = this.local_options["restricted_distance"];
+    if (d >= 100) {
+      d = 99;
+    }
+    if ((e.pageX - this.start_x) * (e.pageX - this.start_x) +
+	 (e.pageY - this.start_y) * (e.pageY - this.start_y) <
+	 d * d) {
+      // If the drag distrance is too small (within 16 pixels from
+      // the starting point), then no go action.
+      return true;
+    }
     var x_dir = 1;
     if (e.preventDefault) {
       e.preventDefault ();
     }
-    if (e.pageX < start_x) {
+    if (e.pageX < this.start_x) {
       x_dir = -1;
     }
     var y_dir = 1;
-    if (e.pageY < start_y) {
+    if (e.pageY < this.start_y) {
       y_dir = -1;
     }
-    start_x = -1;
-    start_y = -1;
-    if (drag_selection.data) {
+    this.start_x = -1;
+    this.start_y = -1;
+    if (this.drag_selection.data) {
       chrome.extension.connect().postMessage({
-        message: 'drag_and_go', selection: drag_selection,
+        message: 'drag_and_go', selection: this.drag_selection,
 	x_dir: x_dir, y_dir: y_dir});
       return false;
     }
@@ -99,7 +115,25 @@ var drag_and_go = {
   },
 };
 
-document.addEventListener('dragstart', drag_and_go.dragStart, false);
-document.addEventListener('dragover', drag_and_go.dragOver, false);
-document.addEventListener('drop', drag_and_go.dragEnd, false);
-document.addEventListener('dragend', drag_and_go.dragEnd, false);
+function dragStart(e) {
+  chrome.extension.sendRequest({message: 'get_options'}, function(response) {
+    drag_and_go.local_options = response;
+  }); 
+  drag_and_go.dragStart(e);
+}
+
+function dragOver(e) {
+  drag_and_go.dragOver(e);
+}
+
+function dragEnd(e) {
+  drag_and_go.dragEnd(e);
+}
+
+document.addEventListener('dragstart', dragStart, false);
+document.addEventListener('dragover', dragOver, false);
+document.addEventListener('drop', dragEnd, false);
+document.addEventListener('dragend', dragEnd, false);
+chrome.extension.sendRequest({message: 'get_options'}, function(response) {
+  drag_and_go.local_options = response;
+}); 

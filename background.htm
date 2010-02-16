@@ -28,14 +28,16 @@ function connectionHandler(port) {
 }
 
 chrome.extension.onConnect.addListener(connectionHandler);
-
-function restoreOptions() {
-  var engine = localStorage["search_engine"];
-  if (!engine) {
-    localStorage["search_engine"] = "http://www.google.com/search?&q=";
-  }
-}
+chrome.extension.onRequest.addListener(
+  function(request, sender, sendResponse) {
+    if (request.message == "get_options") {
+      sendResponse({alt_key: localStorage["alt_key"],
+  	            ctrl_key: localStorage["ctrl_key"],
+	            search_engine: localStorage["search_engine"],
+	            restricted_distance: localStorage["restricted_distance"]});
+    }
+  });
 </script>
 </head>
-<body onload="restoreOptions()">
-</body></html>
+<body></body>
+</html>

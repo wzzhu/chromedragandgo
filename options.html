@@ -1,9 +1,22 @@
 <html>
 <head><title>Drag and Go Extension Options</title></head>
+<style type="text/css">
+	.head{font-size:14px;padding-left:10px;}
+	.item_group{padding-top:5px;padding-left:12px;padding-bottom:10px}
+	.title{height:48px;padding-top:10px;padding-left:50px;font-size:28px;font-weight:bold;
+	background-image:url('dragandgo_48x48.png'); background-repeat:no-repeat;}
+        .options{padding-top:5px; padding-bottom:5px;background-color:white;width:600px;}
+	.text_input{border-bottom:thin solid gray; border-top:none; border-left:none;border-right:none;color:blue}
+	.query_string{width:550}
+	.distance_string{width:18}
+</style>
 <script type="text/javascript">
 function save_options() {
   var engine = document.getElementById("search_engine").value;  
   localStorage["search_engine"] = engine;
+  localStorage["alt_key"] = document.getElementById("alt_key").checked;
+  localStorage["ctrl_key"] = document.getElementById("ctrl_key").checked;
+  localStorage["restricted_distance"] = document.getElementById("restricted_distance").value;
 }
 
 function restore_options() {
@@ -13,21 +26,45 @@ function restore_options() {
   }
   var input_text = document.getElementById("search_engine");
   input_text.value = engine;
+
+  var alt_key = localStorage["alt_key"];
+  document.getElementById("alt_key").checked = alt_key == "true";
+
+  var ctrl_key = localStorage["ctrl_key"];
+  document.getElementById("ctrl_key").checked = ctrl_key == "true";
+
+  var d = localStorage["restricted_distance"];
+  if (!d) {
+    document.getElementById("restricted_distance").value="16";
+  } else {
+    document.getElementById("restricted_distance").value=d;
+  }
 }
 
 function reset_options() {
   var engine = "http://www.google.com/search?&q=";
   var input_text = document.getElementById("search_engine");
   input_text.value = engine;
+  document.getElementById("restricted_distance").value="16";
+  document.getElementById("ctrl_key").checked = true;
+  document.getElementById("alt_key").checked = true;
+
 }
 </script>
 
-<h3>
-Search Engine
-</h3>
 <body onload="restore_options()">
-Query string: <input type="text" id="search_engine" size=50>
-<button onclick="save_options()">Save</button>
-<button onclick="reset_options()">Reset</button>
+<div class="title">Chrome Drag and Go options</div>
+<div class="options">
+<div class="head">Search Engine query string</div>
+<div class="item_group">
+<input type="text" class="text_input query_string" id="search_engine" size=80></div>
+<div class="head">Disable drag and go if any of the following conditions is satisfied.</div>
+<div class="item_group">
+<input type="checkbox" id="alt_key" value="alt_key"> ALT key is pressed.<br/>
+<input type="checkbox" id="ctrl_key" value="ctrl_key"> CTRT key is pressed.<br/>
+The mouse is dragged less than <input class="text_input distance_string" type="text" id="restricted_distance" value="16" maxlength=2> pixels away from the original point when it is released.</div>
+</div>
+<div class="head"><button onclick="save_options()">Save</button>
+<button onclick="reset_options()">Reset</button></div>
 </body>
 </html>
