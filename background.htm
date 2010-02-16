@@ -1,35 +1,19 @@
 <html><head>
 <script>
-// Extract the link from the given text.
-function getTextLink(text) {
-  var re = /https?:\/\/([-\w\.]+)+(:\d+)?(\/([-\w\/_~\.,#%=\*:]*(\?\S+)?)?)?/;
-  var re2 = /www\.[-\w\.]+(\/[\S]*)*/;
-  var matches = text.match(re);
-  var link;
-  if (matches) {
-    link = matches[0];
-  } else {
-    matches = text.match(re2);
-    if (matches) {
-      link = "http://" + matches[0];
-    } else {
-      var engine = localStorage["search_engine"];
-      link = engine + text;
-    }
-  }
-  return link;
-}
-
 function tabAction(tab, drag_data) {
   var new_idx = tab.index;
   if (drag_data.x_dir > 0) {
     ++new_idx;
   }
   var fg = (drag_data.y_dir == 1);
+  var link;
   if (drag_data.selection.type == "text") {
-    var link = getTextLink(drag_data.selection.data);
-    chrome.tabs.create({url: link, selected: fg, index: new_idx});
+    var engine = localStorage["search_engine"];
+    link = engine + drag_data.selection.data;
+  } else {
+    link = drag_data.selection.data;
   }
+  chrome.tabs.create({url: link, selected: fg, index: new_idx});
 }
 
 function dragAndGoListner(data) {
