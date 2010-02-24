@@ -116,9 +116,6 @@ var drag_and_go = {
 };
 
 function dragStart(e) {
-  chrome.extension.sendRequest({message: 'get_options'}, function(response) {
-    drag_and_go.local_options = response;
-  }); 
   drag_and_go.dragStart(e);
 }
 
@@ -137,3 +134,9 @@ document.addEventListener('dragend', dragEnd, false);
 chrome.extension.sendRequest({message: 'get_options'}, function(response) {
   drag_and_go.local_options = response;
 }); 
+chrome.extension.onRequest.addListener(
+  function(request, sender, sendResponse) {
+    if (request.message == "set_options") {
+      drag_and_go.local_options = request.options;
+    }
+  });

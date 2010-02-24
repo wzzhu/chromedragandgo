@@ -9,17 +9,47 @@
 	.text_input{border-bottom:thin solid gray; border-top:none; border-left:none;border-right:none;color:blue}
 	.query_string{width:550}
 	.distance_string{width:18}
+	.hint{padding-top:10px; padding-bottom:10px;padding-left:20px;visibility:hidden;background-color:lightyellow;color:blue}
 </style>
 <script type="text/javascript">
-function save_options() {
+function notifyOptionChange(tabs) {
+  for (var i = 0; i < tabs.length; ++i) {
+  var tab = tabs[i];
+  chrome.tabs.sendRequest(
+    tab.id,
+    {
+      message: "set_options",
+      options: {
+        alt_key: localStorage["alt_key"],
+        ctrl_key: localStorage["ctrl_key"],
+        search_engine: localStorage["search_engine"],
+        restricted_distance: localStorage["restricted_distance"]
+      }
+    });
+  }
+}
+
+function iterateWindows(windows) {
+  for (var i = 0; i < windows.length; ++i) {
+    chrome.tabs.getAllInWindow(windows[i].id, notifyOptionChange);
+  }
+}
+
+function saveOptions() {
   var engine = document.getElementById("search_engine").value;  
   localStorage["search_engine"] = engine;
   localStorage["alt_key"] = document.getElementById("alt_key").checked;
   localStorage["ctrl_key"] = document.getElementById("ctrl_key").checked;
   localStorage["restricted_distance"] = document.getElementById("restricted_distance").value;
+
+  chrome.windows.getAll({populate: true}, iterateWindows);
+  var hint = document.getElementById("hint");
+  hint.style.visibility = "visible";
+  setTimeout("document.getElementById('hint').style.visibility='hidden';",
+             1500);
 }
 
-function restore_options() {
+function restoreOptions() {
   var engine = localStorage["search_engine"];
   if (!engine) {
     engine = "http://www.google.com/search?&q=";
@@ -41,7 +71,7 @@ function restore_options() {
   }
 }
 
-function reset_options() {
+function resetOptions() {
   var engine = "http://www.google.com/search?&q=";
   var input_text = document.getElementById("search_engine");
   input_text.value = engine;
@@ -52,7 +82,7 @@ function reset_options() {
 }
 </script>
 
-<body onload="restore_options()">
+<body onload="restoreOptions()">
 <div class="title">Chrome Drag and Go options</div>
 <div class="options">
 <div class="head">Search Engine query string</div>
@@ -64,7 +94,8 @@ function reset_options() {
 <input type="checkbox" id="ctrl_key" value="ctrl_key"> CTRT key is pressed.<br/>
 The mouse is dragged less than <input class="text_input distance_string" type="text" id="restricted_distance" value="16" maxlength=2> pixels away from the original point when it is released.</div>
 </div>
-<div class="head"><button onclick="save_options()">Save</button>
-<button onclick="reset_options()">Reset</button></div>
+<div class="head"><button onclick="saveOptions()">Save</button>
+<button onclick="resetOptions()">Reset</button></div>
+<div class="hint" id="hint">Options saved.</div>
 </body>
 </html>
