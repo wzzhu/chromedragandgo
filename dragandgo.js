@@ -73,6 +73,8 @@ var drag_and_go = {
     if (e.preventDefault) {
       e.preventDefault ();
     }
+    e.dataTransfer.effectAllowed = "copy";
+    e.dataTransfer.dropEffect = "copy";
     return false;
   },
 
@@ -124,7 +126,9 @@ function dragOver(e) {
 }
 
 function dragEnd(e) {
-  drag_and_go.dragEnd(e);
+  if (e.dataTransfer.dropEffect == "copy") {
+    drag_and_go.dragEnd(e);
+  }
 }
 
 document.addEventListener('dragstart', dragStart, false);
