@@ -60,7 +60,7 @@ var drag_and_go = {
       var link = this.getTextLink(this.drag_selection.data);
       if (link != "") {
 	this.drag_selection.type = "link";
-	this.drag_selection.text = link;
+	this.drag_selection.data = link;
       }
     }
     return false;
