@@ -126,15 +126,12 @@ function dragOver(e) {
 }
 
 function dragEnd(e) {
-  if (e.dataTransfer.dropEffect == "copy") {
-    drag_and_go.dragEnd(e);
-  }
+  drag_and_go.dragEnd(e);
 }
 
 document.addEventListener('dragstart', dragStart, false);
 document.addEventListener('dragover', dragOver, false);
 document.addEventListener('drop', dragEnd, false);
-document.addEventListener('dragend', dragEnd, false);
 chrome.extension.sendRequest({message: 'get_options'}, function(response) {
   drag_and_go.local_options = response;
 }); 
