@@ -1,3 +1,5 @@
+// Copyright(c) Wenzhang Zhu.
+// All rights reserved. 2010.
 var drag_and_go = {
   in_drag: false,
   drag_selection: {type: "text", data: ""},
