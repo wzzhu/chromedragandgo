@@ -1,11 +1,161 @@
 // Copyright(c) Wenzhang Zhu.
 // All rights reserved. 2010.
+
+var local_options = {};
+function Canvas() {
+  this.html_canvas = document.createElement("canvas");
+  this.ctx = this.html_canvas.getContext("2d");
+  this.setCanvasStyle = function (stroke_style, fill_style, line_width) {
+    this.html_canvas.setAttribute("width", window.innerWidth + "px");
+    this.html_canvas.setAttribute("height", window.innerHeight + "px");
+    this.html_canvas.setAttribute(
+        "style", "z-index:100;position:fixed" +
+         ";top:0px;left:0px");
+    this.ctx.fillStyle = fill_style;
+    this.ctx.strokeStyle = stroke_style;
+    this.ctx.lineWidth = line_width;
+    this.ctx.save();
+  };
+
+  this.showCanvas = function (x, y, parent_node) {
+    if (!parent_node) {
+      return;
+    }
+    if (parent_node.lastChild != this.html_canvas) {
+      parent_node.appendChild(this.html_canvas);
+      this.setCanvasStyle("blue", "white", 5);
+    }
+    window.getSelection().empty();
+    this.ctx.beginPath();
+    this.ctx.moveTo(x, y);
+  };
+
+  this.showLineTo = function (x, y, stop) {
+    this.ctx.lineTo(x, y);
+    this.ctx.stroke();
+    if (!stop) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, y);
+    }
+  };
+
+  this.hideCanvas = function() {
+    if (this.html_canvas.parentNode &&
+        this.html_canvas.parentNode.lastChild == this.html_canvas) {
+      this.html_canvas.parentNode.removeChild(this.html_canvas);
+    }
+  };
+
+}
+
+var gesture = {
+  in_gesture: false,
+  seq: "",  // Gesture sequence
+  last_pos: {x: -1, y: -1},  // Last mouse position
+  start_time: 0,
+  beginGesture: function(e) {
+    this.in_gesture = true;
+    this.seq = "";
+    this.last_pos = {x: e.clientX, y:e.clientY};
+    this.start_time = new Date().getTime();
+    return false;
+  },
+  canvas: new Canvas(),
+
+  moveGesture: function(e) {
+    if (!this.in_gesture) {
+      return true;
+    }
+    if (new Date().getTime() - this.start_time < 300) {
+      // Wait for some us till we didn't see dragStart.
+      return true;
+    }
+    this.canvas.showCanvas(this.last_pos.x, this.last_pos.y, document.body);
+    this.collectGestures(e);
+    this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, false);
+    return false;
+  },
+ 
+  collectGestures: function(e) {
+    if (this.last_pos.x < 0 || this.last_pos.y < 0) {
+      this.last_pos = {x:e.clientX, y:e.clientY};
+    } else {
+      var dx = e.clientX - this.last_pos.x;
+      var dy = e.clientY - this.last_pos.y;
+      if (dx * dx + dy * dy < 256) {
+	      // Ignore short distance.
+	return false;
+      }
+      var new_gesture;
+      if (Math.abs(dx) > Math.abs(dy)) {
+	if (dx > 0) {
+	  new_gesture = "R";
+	} else {
+	  new_gesture = "L";
+	}
+      } else {
+	if (dy > 0) {
+	  new_gesture = "D";
+	} else {
+	  new_gesture = "U";
+	}
+      }
+      if (this.seq.length <=0 ||
+          this.seq.substr(this.seq.length - 1, 1) != new_gesture) {
+        this.seq = this.seq + new_gesture;
+      }
+    }
+    this.last_pos = {x:e.clientX, y:e.clientY};
+    return false;
+  },
+
+  endGesture: function(e) {
+    if (!this.in_gesture) {
+      return true;
+    }
+    this.in_gesture = false;
+    this.collectGestures(e);
+    this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, true);
+    if (this.seq != "") {
+      this.takeAction(this.seq);
+      this.seq = "";
+    }
+    this.canvas.hideCanvas();
+    this.last_pos = {x: -1, y: -1};
+    if (e.preventDefault) {
+      e.preventDefault ();
+    }
+    return false;
+  },
+
+  cancelGesture: function(e) {
+    this.in_gesture = false;
+  },
+
+  takeAction: function(seq) {
+    if (this.seq == "L") {
+      history.back();
+    } else if (this.seq == "R") {
+      history.forward();
+    } else if (this.seq == "U") {
+      window.scrollBy(0, -window.innerHeight / 2);
+    } else if (this.seq == "D") {
+      window.scrollBy(0, window.innerHeight / 2);
+    } else if (this.seq == "DR") {
+      window.open('', '_self', '');
+      window.close();
+    } else if (this.seq == "UD") {
+      location.reload(true);
+    }
+    return false;
+  }
+};
+
 var drag_and_go = {
   in_drag: false,
   drag_selection: {type: "text", data: ""},
   start_x: -1,
   start_y: -1,
-  local_options: {},
 
   // Extract the link from the given text if any.
   // Otherwise return empty string.
@@ -50,19 +200,21 @@ var drag_and_go = {
   },
   
   dragStart: function(e) {
-    if (this.local_options["alt_key"] == "true" && e.altKey ||
-        this.local_options["ctrl_key"] == "true" && e.ctrlKey) {
+    if (local_options["alt_key"] == "true" && e.altKey ||
+        local_options["ctrl_key"] == "true" && e.ctrlKey) {
       return true;
     }
     this.in_drag = true;
-    this.start_x = e.pageX;
-    this.start_y = e.pageY;
+    this.start_x = e.clientX;
+    this.start_y = e.clientY;
     this.drag_selection = this.getDragSelection(e);
     if (this.drag_selection.type == "text") {
       var link = this.getTextLink(this.drag_selection.data);
       if (link != "") {
 	this.drag_selection.type = "link";
 	this.drag_selection.data = link;
+      } else {
+	return true;
       }
     }
     return false;
@@ -80,17 +232,17 @@ var drag_and_go = {
     return false;
   },
 
-  dragEnd: function(e) {
+  drop: function(e) {
     if (!this.in_drag) {
       return true;
     }
     this.in_drag = false;
-    var d = this.local_options["restricted_distance"];
+    var d = local_options["restricted_distance"];
     if (d >= 100) {
       d = 99;
     }
-    if ((e.pageX - this.start_x) * (e.pageX - this.start_x) +
-	 (e.pageY - this.start_y) * (e.pageY - this.start_y) <
+    if ((e.clientX - this.start_x) * (e.clientX - this.start_x) +
+	 (e.clientY - this.start_y) * (e.clientY - this.start_y) <
 	 d * d) {
       // If the drag distrance is too small (within 16 pixels from
       // the starting point), then no go action.
@@ -100,11 +252,11 @@ var drag_and_go = {
     if (e.preventDefault) {
       e.preventDefault ();
     }
-    if (e.pageX < this.start_x) {
+    if (e.clientX < this.start_x) {
       x_dir = -1;
     }
     var y_dir = 1;
-    if (e.pageY < this.start_y) {
+    if (e.clientY < this.start_y) {
       y_dir = -1;
     }
     this.start_x = -1;
@@ -117,29 +269,61 @@ var drag_and_go = {
     }
     return true;
   },
+
+  dragEnd: function(e) {
+    this.in_drag = false;
+  }
 };
 
 function dragStart(e) {
-  drag_and_go.dragStart(e);
+  gesture.cancelGesture(e);
+  return drag_and_go.dragStart(e);
 }
 
 function dragOver(e) {
-  drag_and_go.dragOver(e);
+  return drag_and_go.dragOver(e);
 }
 
 function dragEnd(e) {
-  drag_and_go.dragEnd(e);
+  return drag_and_go.dragEnd(e);
+}
+
+function drop(e) {
+  return drag_and_go.drop(e);
+}
+
+function mouseDown(e) {
+  var use_gesture = local_options["enable_gesture"];
+  if (use_gesture && !e.ctrlKey && !e.altKey) {
+    return gesture.beginGesture(e);
+  }
+}
+
+function mouseUp(e) {
+  return gesture.endGesture(e);
+}
+
+function mouseMove(e) {
+  if (!drag_and_go.in_drag) {
+    return gesture.moveGesture(e);
+  }
+  return false;
 }
 
 document.addEventListener('dragstart', dragStart, false);
 document.addEventListener('dragover', dragOver, false);
-document.addEventListener('drop', dragEnd, false);
+document.addEventListener('drop', drop, false);
+document.addEventListener('dragend', dragEnd, false);
+document.addEventListener('mousedown', mouseDown, false);
+document.addEventListener('mouseup', mouseUp, false);
+document.addEventListener('mousemove', mouseMove, false);
+
 chrome.extension.sendRequest({message: 'get_options'}, function(response) {
-  drag_and_go.local_options = response;
+  local_options = response;
 }); 
 chrome.extension.onRequest.addListener(
   function(request, sender, sendResponse) {
     if (request.message == "set_options") {
-      drag_and_go.local_options = request.options;
+      local_options = request.options;
     }
   });

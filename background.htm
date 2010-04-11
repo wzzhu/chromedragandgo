@@ -34,7 +34,8 @@ chrome.extension.onRequest.addListener(
       sendResponse({alt_key: localStorage["alt_key"],
   	            ctrl_key: localStorage["ctrl_key"],
 	            search_engine: localStorage["search_engine"],
-	            restricted_distance: localStorage["restricted_distance"]});
+		    restricted_distance: localStorage["restricted_distance"],
+	            enable_gesture: localStorage["enable_gesture"]});
     }
   });
 </script>
