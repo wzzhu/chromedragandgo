@@ -25,7 +25,6 @@ function Canvas() {
       parent_node.appendChild(this.html_canvas);
       this.setCanvasStyle("blue", "white", 5);
     }
-    window.getSelection().empty();
     this.ctx.beginPath();
     this.ctx.moveTo(x, y);
   };
@@ -70,12 +69,13 @@ var gesture = {
       // Wait for some us till we didn't see dragStart.
       return true;
     }
+    window.getSelection().empty();
     this.canvas.showCanvas(this.last_pos.x, this.last_pos.y, document.body);
     this.collectGestures(e);
     this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, false);
     return false;
   },
- 
+
   collectGestures: function(e) {
     if (this.last_pos.x < 0 || this.last_pos.y < 0) {
       this.last_pos = {x:e.clientX, y:e.clientY};
@@ -83,22 +83,22 @@ var gesture = {
       var dx = e.clientX - this.last_pos.x;
       var dy = e.clientY - this.last_pos.y;
       if (dx * dx + dy * dy < 256) {
-	      // Ignore short distance.
-	return false;
+        // Ignore short distance.
+        return false;
       }
       var new_gesture;
       if (Math.abs(dx) > Math.abs(dy)) {
-	if (dx > 0) {
-	  new_gesture = "R";
-	} else {
-	  new_gesture = "L";
-	}
+        if (dx > 0) {
+          new_gesture = "R";
+        } else {
+          new_gesture = "L";
+        }
       } else {
-	if (dy > 0) {
-	  new_gesture = "D";
-	} else {
-	  new_gesture = "U";
-	}
+        if (dy > 0) {
+          new_gesture = "D";
+        } else {
+          new_gesture = "U";
+        }
       }
       if (this.seq.length <=0 ||
           this.seq.substr(this.seq.length - 1, 1) != new_gesture) {
@@ -115,10 +115,11 @@ var gesture = {
     }
     this.in_gesture = false;
     this.collectGestures(e);
-    window.getSelection().empty();
     this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, true);
     if (this.seq != "") {
-      this.takeAction(this.seq);
+      if (this.takeAction(this.seq)) {
+        window.getSelection().empty();
+      }
       this.seq = "";
     }
     this.canvas.hideCanvas();
@@ -147,8 +148,10 @@ var gesture = {
       window.close();
     } else if (this.seq == "UD") {
       location.reload(true);
+    } else {
+      return false;
     }
-    return false;
+    return true;
   }
 };
 
@@ -199,7 +202,7 @@ var drag_and_go = {
     }
     return {"type": data_type, "data": data};
   },
-  
+
   dragStart: function(e) {
     if (local_options["alt_key"] == "true" && e.altKey ||
         local_options["ctrl_key"] == "true" && e.ctrlKey) {
@@ -212,10 +215,10 @@ var drag_and_go = {
     if (this.drag_selection.type == "text") {
       var link = this.getTextLink(this.drag_selection.data);
       if (link != "") {
-	this.drag_selection.type = "link";
-	this.drag_selection.data = link;
+        this.drag_selection.type = "link";
+        this.drag_selection.data = link;
       } else {
-	return true;
+        return true;
       }
     }
     return false;
@@ -243,8 +246,7 @@ var drag_and_go = {
       d = 99;
     }
     if ((e.clientX - this.start_x) * (e.clientX - this.start_x) +
-	 (e.clientY - this.start_y) * (e.clientY - this.start_y) <
-	 d * d) {
+        (e.clientY - this.start_y) * (e.clientY - this.start_y) < d * d) {
       // If the drag distrance is too small (within 16 pixels from
       // the starting point), then no go action.
       return true;
@@ -265,7 +267,7 @@ var drag_and_go = {
     if (this.drag_selection.data) {
       chrome.extension.connect().postMessage({
         message: 'drag_and_go', selection: this.drag_selection,
-	x_dir: x_dir, y_dir: y_dir});
+        x_dir: x_dir, y_dir: y_dir});
       return false;
     }
     return true;
@@ -327,7 +329,7 @@ document.addEventListener('mousemove', mouseMove, false);
 
 chrome.extension.sendRequest({message: 'get_options'}, function(response) {
   local_options = response;
-}); 
+});
 chrome.extension.onRequest.addListener(
   function(request, sender, sendResponse) {
     if (request.message == "set_options") {
