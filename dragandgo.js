@@ -115,6 +115,7 @@ var gesture = {
     }
     this.in_gesture = false;
     this.collectGestures(e);
+    window.getSelection().empty();
     this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, true);
     if (this.seq != "") {
       this.takeAction(this.seq);
@@ -294,17 +295,23 @@ function drop(e) {
 
 function mouseDown(e) {
   var use_gesture = local_options["enable_gesture"];
-  if (use_gesture && !e.ctrlKey && !e.altKey) {
+  if (use_gesture && !e.ctrlKey && !e.altKey &&
+      e.clientX + 20 < window.innerWidth &&
+      e.clientY + 20 < window.innerHeight) {
     return gesture.beginGesture(e);
   }
 }
 
 function mouseUp(e) {
-  return gesture.endGesture(e);
+  var use_gesture = local_options["enable_gesture"];
+  if (use_gesture) {
+    return gesture.endGesture(e);
+  }
 }
 
 function mouseMove(e) {
-  if (!drag_and_go.in_drag) {
+  var use_gesture = local_options["enable_gesture"];
+  if (!drag_and_go.in_drag && use_gesture) {
     return gesture.moveGesture(e);
   }
   return false;

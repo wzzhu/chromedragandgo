@@ -8,11 +8,11 @@
       "run_at": "document_start"
    } ],
    "permissions": ["tabs"],
-   "description": "Drag and Go",
+   "description": "Super Drag and Go, plus 6 most frequently used gestures with left mouse.",
    "name": "Drag and Go",
    "icons": {"32": "dragandgo_32x32.png",
              "48": "dragandgo_48x48.png",
              "128": "dragandgo_128x128.png"},
    "options_page": "options.html",
-   "version": "1.6.0"
+   "version": "1.6.1"
 }
