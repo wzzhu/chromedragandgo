@@ -296,7 +296,7 @@ function drop(e) {
 }
 
 function mouseDown(e) {
-  var use_gesture = local_options["enable_gesture"];
+  var use_gesture = local_options["enable_gesture"] == "true";
   if (use_gesture && !e.ctrlKey && !e.altKey &&
       e.clientX + 20 < window.innerWidth &&
       e.clientY + 20 < window.innerHeight) {
@@ -305,14 +305,14 @@ function mouseDown(e) {
 }
 
 function mouseUp(e) {
-  var use_gesture = local_options["enable_gesture"];
+  var use_gesture = local_options["enable_gesture"] == "true";
   if (use_gesture) {
     return gesture.endGesture(e);
   }
 }
 
 function mouseMove(e) {
-  var use_gesture = local_options["enable_gesture"];
+  var use_gesture = local_options["enable_gesture"] == "true";
   if (!drag_and_go.in_drag && use_gesture) {
     return gesture.moveGesture(e);
   }
