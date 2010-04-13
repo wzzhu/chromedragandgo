@@ -27,6 +27,30 @@ function connectionHandler(port) {
   port.onMessage.addListener(dragAndGoListner);
 }
 
+function initSettings() {
+  if (localStorage["search_engine"] == undefined) {
+    var engine = "http://www.google.com/search?&q=";
+    localStorage["search_engine"] = engine;
+  }
+  
+  if (localStorage["alt_key"] == undefined) {
+    localStorage["alt_key"] = "true";
+  }
+  
+  if (localStorage["ctrl_key"] == undefined) {
+    localStorage["ctrl_key"] = "true";
+  }
+  
+  if (localStorage["restricted_distance"] == undefined) {
+    localStorage["restricted_distance"] = 16;
+  }
+  
+  if (localStorage["use_gesture"] == undefined) {
+    localStorage["use_gesture"] = "true";
+  }
+}
+
+initSettings();
 chrome.extension.onConnect.addListener(connectionHandler);
 chrome.extension.onRequest.addListener(
   function(request, sender, sendResponse) {
