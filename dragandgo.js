@@ -66,7 +66,7 @@ var gesture = {
       return true;
     }
     if (new Date().getTime() - this.start_time < 300) {
-      // Wait for some us till we didn't see dragStart.
+      // Wait for dragStart before some us time passes.
       return true;
     }
     window.getSelection().empty();
@@ -117,11 +117,11 @@ var gesture = {
     this.collectGestures(e);
     this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, true);
     if (this.seq != "") {
-      if (this.takeAction(this.seq)) {
-        window.getSelection().empty();
-      }
+      this.takeAction(this.seq);
       this.seq = "";
     }
+    document.removeEventListener('mousemove', mouseMove, false);
+    window.getSelection().empty();
     this.canvas.hideCanvas();
     this.last_pos = {x: -1, y: -1};
     if (e.preventDefault) {
@@ -288,23 +288,46 @@ function dragOver(e) {
 }
 
 function dragEnd(e) {
+  console.log("dragEnd");
   return drag_and_go.dragEnd(e);
 }
 
 function drop(e) {
+  console.log("drop");
   return drag_and_go.drop(e);
 }
 
+function hitTextNode(e) {
+  var sel = window.getSelection();
+  if ((sel.focusNode && sel.focusNode.parentNode == e.srcElement &&
+       sel.focusNode.nodeName == "#text" && 
+       sel.focusOffset < sel.focusNode.length) ||
+      (!sel.focusNode && e.srcElement && e.srcElement.firstChild &&
+       e.srcElement.firstChild.nodeName == "#text")) {
+    // Hit in the text.
+    console.log("hit");
+    return true;
+  }
+  return false;
+}
+
 function mouseDown(e) {
+  console.log("mousedown");
   var use_gesture = local_options["enable_gesture"] == "true";
   if (use_gesture && !e.ctrlKey && !e.altKey &&
       e.clientX + 20 < window.innerWidth &&
-      e.clientY + 20 < window.innerHeight) {
+      e.clientY + 20 < window.innerHeight &&
+      !hitTextNode(e)) {
+    document.addEventListener('mousemove', mouseMove, false);
     return gesture.beginGesture(e);
+  } else {
+    gesture.cancelGesture(e);
+    return true;
   }
 }
 
 function mouseUp(e) {
+  console.log("mouseup");
   var use_gesture = local_options["enable_gesture"] == "true";
   if (use_gesture) {
     return gesture.endGesture(e);
@@ -312,11 +335,13 @@ function mouseUp(e) {
 }
 
 function mouseMove(e) {
+  console.log("mousemove");
   var use_gesture = local_options["enable_gesture"] == "true";
   if (!drag_and_go.in_drag && use_gesture) {
     return gesture.moveGesture(e);
   }
-  return false;
+  document.removeEventListener('mousemove', mouseMove, false);
+  return true;
 }
 
 document.addEventListener('dragstart', dragStart, false);
@@ -325,7 +350,6 @@ document.addEventListener('drop', drop, false);
 document.addEventListener('dragend', dragEnd, false);
 document.addEventListener('mousedown', mouseDown, false);
 document.addEventListener('mouseup', mouseUp, false);
-document.addEventListener('mousemove', mouseMove, false);
 
 chrome.extension.sendRequest({message: 'get_options'}, function(response) {
   local_options = response;
