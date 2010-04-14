@@ -77,8 +77,7 @@ var gesture = {
     var range = window.getSelection().getRangeAt(0);
     console.log(range);
     console.log(range);
-    if (!this.canvas.hasCanvas() &&
-        range && range.startContainer.nodeName == "#text" &&
+    if (!this.canvas.hasCanvas() && range && 
 	range.startContainer == range.endContainer &&
 	range.startOffset < range.startContainer.length &&
 	range.endOffset < range.endContainer.length) {
@@ -157,9 +156,9 @@ var gesture = {
     } else if (this.seq == "R") {
       history.forward();
     } else if (this.seq == "U") {
-      window.scrollBy(0, -window.innerHeight / 2);
+      window.scrollBy(0, -window.innerHeight * 4 / 5);
     } else if (this.seq == "D") {
-      window.scrollBy(0, window.innerHeight / 2);
+      window.scrollBy(0, window.innerHeight * 4 / 5);
     } else if (this.seq == "DR") {
       window.open('', '_self', '');
       window.close();
