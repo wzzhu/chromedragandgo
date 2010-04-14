@@ -38,6 +38,11 @@ function Canvas() {
     }
   };
 
+  this.hasCanvas = function() {
+    return (this.html_canvas.parentNode &&
+	    this.html_canvas.parentNode.lastChild == this.html_canvas);
+  }
+
   this.hideCanvas = function() {
     if (this.html_canvas.parentNode &&
         this.html_canvas.parentNode.lastChild == this.html_canvas) {
@@ -69,9 +74,20 @@ var gesture = {
       // Wait for dragStart before some us time passes.
       return true;
     }
-    window.getSelection().empty();
+    var range = window.getSelection().getRangeAt(0);
+    console.log(range);
+    console.log(range);
+    if (!this.canvas.hasCanvas() &&
+        range && range.startContainer.nodeName == "#text" &&
+	range.startContainer == range.endContainer &&
+	range.startOffset < range.startContainer.length &&
+	range.endOffset < range.endContainer.length) {
+      this.cancelGesture(e);
+      return true;
+    }
     this.canvas.showCanvas(this.last_pos.x, this.last_pos.y, document.body);
     this.collectGestures(e);
+    window.getSelection().empty();
     this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, false);
     return false;
   },
@@ -115,18 +131,19 @@ var gesture = {
     }
     this.in_gesture = false;
     this.collectGestures(e);
-    this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, true);
     if (this.seq != "") {
-      this.takeAction(this.seq);
+      this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, true);
+      if (this.takeAction(this.seq)) {
+        window.getSelection().empty();
+      }
       this.seq = "";
+      this.canvas.hideCanvas();
+      if (e.preventDefault) {
+        e.preventDefault ();
+      }
     }
     document.removeEventListener('mousemove', mouseMove, false);
-    window.getSelection().empty();
-    this.canvas.hideCanvas();
     this.last_pos = {x: -1, y: -1};
-    if (e.preventDefault) {
-      e.preventDefault ();
-    }
     return false;
   },
 
@@ -297,27 +314,12 @@ function drop(e) {
   return drag_and_go.drop(e);
 }
 
-function hitTextNode(e) {
-  var sel = window.getSelection();
-  if ((sel.focusNode && sel.focusNode.parentNode == e.srcElement &&
-       sel.focusNode.nodeName == "#text" && 
-       sel.focusOffset < sel.focusNode.length) ||
-      (!sel.focusNode && e.srcElement && e.srcElement.firstChild &&
-       e.srcElement.firstChild.nodeName == "#text")) {
-    // Hit in the text.
-    console.log("hit");
-    return true;
-  }
-  return false;
-}
-
 function mouseDown(e) {
   console.log("mousedown");
   var use_gesture = local_options["enable_gesture"] == "true";
   if (use_gesture && !e.ctrlKey && !e.altKey &&
       e.clientX + 20 < window.innerWidth &&
-      e.clientY + 20 < window.innerHeight &&
-      !hitTextNode(e)) {
+      e.clientY + 20 < window.innerHeight) {
     document.addEventListener('mousemove', mouseMove, false);
     return gesture.beginGesture(e);
   } else {
