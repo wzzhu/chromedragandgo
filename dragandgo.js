@@ -79,8 +79,10 @@ var gesture = {
     console.log(range);
     if (!this.canvas.hasCanvas() && range && 
 	range.startContainer == range.endContainer &&
-	range.startOffset < range.startContainer.length &&
-	range.endOffset < range.endContainer.length) {
+	(range.startContainer.nodeName == "#text" &&
+	 range.startOffset < range.startContainer.length &&
+	 range.endOffset < range.endContainer.length ||
+	 range.startOffset == range.endOffset)) {
       this.cancelGesture(e);
       return true;
     }
