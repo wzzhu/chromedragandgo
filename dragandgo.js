@@ -1,6 +1,36 @@
 // Copyright(c) Wenzhang Zhu.
 // All rights reserved. 2010.
 
+var chromeVersion = {
+  version: [0, 0, 0, 0],
+  getVersion: function() {
+    var match = navigator.userAgent.match(/Chrome\/(\d+)\.(\d+)\.(\d+)\.(\d+)/);
+    if (match) {
+      this.version[0] = parseInt(match[1]);
+      this.version[1] = parseInt(match[2]);
+      this.version[2] = parseInt(match[3]);
+      this.version[3] = parseInt(match[4]);
+    }
+  },
+
+  // Checks if it is larger or equal to given version.
+  isLargerThanOrEqual: function(ver_to_check) {
+    var larger_or_equal = true;
+    if (this.version[0] == 0) {
+      this.getVersion();
+    }
+    for (i = 0; i < 4; ++i) {
+      if (this.version[i] > ver_to_check[i]) {
+	break;
+      } else if (this.version[i] < ver_to_check[i]) {
+        larger_or_equal = false;
+        break;
+      }
+    }
+    return larger_or_equal;
+  }
+};
+
 var local_options = {};
 function Canvas() {
   this.html_canvas = document.createElement("canvas");
@@ -10,7 +40,7 @@ function Canvas() {
     this.html_canvas.setAttribute("height", window.innerHeight + "px");
     this.html_canvas.setAttribute(
         "style", "z-index:100;position:fixed" +
-         ";top:0px;left:0px");
+        ";top:0px;left:0px");
     this.ctx.fillStyle = fill_style;
     this.ctx.strokeStyle = stroke_style;
     this.ctx.lineWidth = line_width;
@@ -49,7 +79,6 @@ function Canvas() {
       this.html_canvas.parentNode.removeChild(this.html_canvas);
     }
   };
-
 }
 
 var gesture = {
@@ -74,10 +103,11 @@ var gesture = {
       // Wait for dragStart before some us time passes.
       return true;
     }
-    var range = window.getSelection().getRangeAt(0);
-    console.log(range);
-    console.log(range);
-    if (!this.canvas.hasCanvas() && range && 
+    var range = null;
+    if (window.getSelection().rangeCount > 0) {
+      range = window.getSelection().getRangeAt(0);
+    }
+    if (!this.canvas.hasCanvas() && range &&
 	range.startContainer == range.endContainer &&
 	(range.startContainer.nodeName == "#text" &&
 	 range.startOffset < range.startContainer.length &&
@@ -306,17 +336,25 @@ function dragOver(e) {
 }
 
 function dragEnd(e) {
-  console.log("dragEnd");
+  if (!chromeVersion.isLargerThanOrEqual([5, 0, 371, 0]) &&
+    chromeVersion.isLargerThanOrEqual([4, 1, 249, 0])) {
+    return drag_and_go.drop(e);
+  }
   return drag_and_go.dragEnd(e);
 }
 
 function drop(e) {
-  console.log("drop");
+  if (!chromeVersion.isLargerThanOrEqual([5, 0, 371, 0]) &&
+      chromeVersion.isLargerThanOrEqual([4, 1, 249, 0])) {
+    if (e.dataTransfer.dropEffect == "copy") {
+      return drag_and_go.drop(e);
+    }
+    return true;
+  }
   return drag_and_go.drop(e);
 }
 
 function mouseDown(e) {
-  console.log("mousedown");
   var use_gesture = local_options["enable_gesture"] == "true";
   if (use_gesture && !e.ctrlKey && !e.altKey &&
       e.clientX + 20 < window.innerWidth &&
@@ -330,7 +368,6 @@ function mouseDown(e) {
 }
 
 function mouseUp(e) {
-  console.log("mouseup");
   var use_gesture = local_options["enable_gesture"] == "true";
   if (use_gesture) {
     return gesture.endGesture(e);
@@ -338,7 +375,6 @@ function mouseUp(e) {
 }
 
 function mouseMove(e) {
-  console.log("mousemove");
   var use_gesture = local_options["enable_gesture"] == "true";
   if (!drag_and_go.in_drag && use_gesture) {
     return gesture.moveGesture(e);
@@ -349,8 +385,13 @@ function mouseMove(e) {
 
 document.addEventListener('dragstart', dragStart, false);
 document.addEventListener('dragover', dragOver, false);
-document.addEventListener('drop', drop, false);
-document.addEventListener('dragend', dragEnd, false);
+if (!chromeVersion.isLargerThanOrEqual([5, 0, 371, 0]) &&
+    chromeVersion.isLargerThanOrEqual([4, 1, 249, 0])) {
+  document.addEventListener('dragend', drop, false);
+} else {
+  document.addEventListener('drop', drop, false);
+  document.addEventListener('dragend', dragEnd, false);
+}
 document.addEventListener('mousedown', mouseDown, false);
 document.addEventListener('mouseup', mouseUp, false);
 
