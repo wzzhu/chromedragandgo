@@ -180,6 +180,7 @@ var gesture = {
 
   cancelGesture: function(e) {
     this.in_gesture = false;
+    this.canvas.hideCanvas();
   },
 
   takeAction: function(seq) {
@@ -358,7 +359,8 @@ function mouseDown(e) {
   var use_gesture = local_options["enable_gesture"] == "true";
   if (use_gesture && !e.ctrlKey && !e.altKey &&
       e.clientX + 20 < window.innerWidth &&
-      e.clientY + 20 < window.innerHeight) {
+      e.clientY + 20 < window.innerHeight &&
+      !gesture.in_gesture) {
     document.addEventListener('mousemove', mouseMove, false);
     return gesture.beginGesture(e);
   } else {
