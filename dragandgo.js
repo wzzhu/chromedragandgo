@@ -1,5 +1,5 @@
-// Copyright(c) Wenzhang Zhu.
-// All rights reserved. 2010.
+// Copyright(c) 2010 Wenzhang Zhu.
+// All rights reserved.
 
 var chromeVersion = {
   version: [0, 0, 0, 0],
@@ -21,7 +21,7 @@ var chromeVersion = {
     }
     for (i = 0; i < 4; ++i) {
       if (this.version[i] > ver_to_check[i]) {
-	break;
+        break;
       } else if (this.version[i] < ver_to_check[i]) {
         larger_or_equal = false;
         break;
@@ -70,7 +70,7 @@ function Canvas() {
 
   this.hasCanvas = function() {
     return (this.html_canvas.parentNode &&
-	    this.html_canvas.parentNode.lastChild == this.html_canvas);
+            this.html_canvas.parentNode.lastChild == this.html_canvas);
   }
 
   this.hideCanvas = function() {
@@ -84,12 +84,18 @@ function Canvas() {
 var gesture = {
   in_gesture: false,
   seq: "",  // Gesture sequence
-  last_pos: {x: -1, y: -1},  // Last mouse position
+  last_pos: {
+    x: -1,
+    y: -1
+  },  // Last mouse position
   start_time: 0,
   beginGesture: function(e) {
     this.in_gesture = true;
     this.seq = "";
-    this.last_pos = {x: e.clientX, y:e.clientY};
+    this.last_pos = {
+      x: e.clientX,
+      y: e.clientY
+    };
     this.start_time = new Date().getTime();
     return false;
   },
@@ -108,15 +114,20 @@ var gesture = {
       range = window.getSelection().getRangeAt(0);
     }
     if (!this.canvas.hasCanvas() && range &&
-	range.startContainer == range.endContainer &&
-	(range.startContainer.nodeName == "#text" &&
-	 range.startOffset < range.startContainer.length &&
-	 range.endOffset < range.endContainer.length ||
-	 range.startOffset == range.endOffset)) {
+        range.startContainer == range.endContainer &&
+        (range.startContainer.nodeName == "#text" &&
+         range.startOffset < range.startContainer.length &&
+         range.endOffset < range.endContainer.length ||
+         range.startOffset == range.endOffset)) {
       this.cancelGesture(e);
       return true;
     }
     this.canvas.showCanvas(this.last_pos.x, this.last_pos.y, document.body);
+    if (this.seq.length > 3) {
+      this.cancelGesture();
+      window.getSelection().empty();
+      return true;
+    }
     this.collectGestures(e);
     window.getSelection().empty();
     this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, false);
@@ -125,7 +136,10 @@ var gesture = {
 
   collectGestures: function(e) {
     if (this.last_pos.x < 0 || this.last_pos.y < 0) {
-      this.last_pos = {x:e.clientX, y:e.clientY};
+      this.last_pos = {
+        x:e.clientX,
+        y:e.clientY
+      };
     } else {
       var dx = e.clientX - this.last_pos.x;
       var dy = e.clientY - this.last_pos.y;
@@ -152,7 +166,10 @@ var gesture = {
         this.seq = this.seq + new_gesture;
       }
     }
-    this.last_pos = {x:e.clientX, y:e.clientY};
+    this.last_pos = {
+      x:e.clientX,
+      y:e.clientY
+    };
     return false;
   },
 
@@ -174,7 +191,10 @@ var gesture = {
       }
     }
     document.removeEventListener('mousemove', mouseMove, false);
-    this.last_pos = {x: -1, y: -1};
+    this.last_pos = {
+      x: -1,
+      y: -1
+    };
     return false;
   },
 
@@ -206,24 +226,21 @@ var gesture = {
 
 var drag_and_go = {
   in_drag: false,
-  drag_selection: {type: "text", data: ""},
+  drag_selection: {
+    type: "text",
+    data: ""
+  },
   start_x: -1,
   start_y: -1,
 
   // Extract the link from the given text if any.
   // Otherwise return empty string.
   getTextLink: function(text) {
-    var re = /https?:\/\/([-\w\.]+)+(:\d+)?(\/([-\w\/_~\.,#%=\*:]*(\?\S+)?)?)?/;
-    var re2 = /www\.[-\w\.]+(\/[\S]*)*/;
+    var re = /((http|ftp|https):\/\/|www\.)[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?/;
     var link = "";
     var matches = text.match(re);
     if (matches) {
       link = matches[0];
-    } else {
-      matches = text.match(re2);
-      if (matches) {
-        link = "http://" + matches[0];
-      }
     }
     return link;
   },
@@ -249,12 +266,15 @@ var drag_and_go = {
         data = selection.toString();
       }
     }
-    return {"type": data_type, "data": data};
+    return {
+      "type": data_type,
+      "data": data
+    };
   },
 
   dragStart: function(e) {
     if (local_options["alt_key"] == "true" && e.altKey ||
-        local_options["ctrl_key"] == "true" && e.ctrlKey) {
+      local_options["ctrl_key"] == "true" && e.ctrlKey) {
       return true;
     }
     this.in_drag = true;
@@ -315,8 +335,11 @@ var drag_and_go = {
     this.start_y = -1;
     if (this.drag_selection.data) {
       chrome.extension.connect().postMessage({
-        message: 'drag_and_go', selection: this.drag_selection,
-        x_dir: x_dir, y_dir: y_dir});
+        message: 'drag_and_go',
+        selection: this.drag_selection,
+        x_dir: x_dir, 
+        y_dir: y_dir
+      });
       return false;
     }
     return true;
@@ -338,7 +361,7 @@ function dragOver(e) {
 
 function dragEnd(e) {
   if (!chromeVersion.isLargerThanOrEqual([5, 0, 371, 0]) &&
-    chromeVersion.isLargerThanOrEqual([4, 1, 249, 0])) {
+      chromeVersion.isLargerThanOrEqual([4, 1, 249, 0])) {
     return drag_and_go.drop(e);
   }
   return drag_and_go.dragEnd(e);
@@ -357,10 +380,7 @@ function drop(e) {
 
 function mouseDown(e) {
   var use_gesture = local_options["enable_gesture"] == "true";
-  if (use_gesture && !e.ctrlKey && !e.altKey &&
-      e.clientX + 20 < window.innerWidth &&
-      e.clientY + 20 < window.innerHeight &&
-      !gesture.in_gesture) {
+  if (use_gesture && !e.ctrlKey && !e.altKey && !gesture.in_gesture) {
     document.addEventListener('mousemove', mouseMove, false);
     return gesture.beginGesture(e);
   } else {
