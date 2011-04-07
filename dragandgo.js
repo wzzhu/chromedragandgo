@@ -137,8 +137,8 @@ var gesture = {
   collectGestures: function(e) {
     if (this.last_pos.x < 0 || this.last_pos.y < 0) {
       this.last_pos = {
-        x:e.clientX,
-        y:e.clientY
+        x: e.clientX,
+        y: e.clientY
       };
     } else {
       var dx = e.clientX - this.last_pos.x;
@@ -167,8 +167,8 @@ var gesture = {
       }
     }
     this.last_pos = {
-      x:e.clientX,
-      y:e.clientY
+      x: e.clientX,
+      y: e.clientY
     };
     return false;
   },
@@ -236,7 +236,7 @@ var drag_and_go = {
   // Extract the link from the given text if any.
   // Otherwise return empty string.
   getTextLink: function(text) {
-    var re = /((http|ftp|https):\/\/|www\.)[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?/;
+    var re = /((http|ftp|https):\/\/|www\.)[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:\/~\+#\*]*[\w\-\.,@?^=%&:\/~\+#\*])?/;
     var link = "";
     var matches = text.match(re);
     if (matches) {

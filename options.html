@@ -9,7 +9,6 @@
         .options{padding-top:5px; padding-bottom:5px;background-color:white;width:600px;}
 	.text_input{border-bottom:thin solid gray; border-top:none; border-left:none;border-right:none;color:blue}
 	.query_string{width:550}
-	.distance_string{width:18}
 	.hint{padding-top:10px; padding-bottom:10px;padding-left:20px;visibility:hidden;background-color:lightyellow;color:blue}
 	.description{padding-left:22px;}
 </style>
@@ -25,8 +24,7 @@ function notifyOptionChange(tabs) {
         alt_key: localStorage["alt_key"],
         ctrl_key: localStorage["ctrl_key"],
         search_engine: localStorage["search_engine"],
-        restricted_distance: localStorage["restricted_distance"],
-	enable_gesture: localStorage["enable_gesture"]
+	      enable_gesture: localStorage["enable_gesture"]
       }
     });
   }
@@ -43,7 +41,6 @@ function saveOptions() {
   localStorage["search_engine"] = engine;
   localStorage["alt_key"] = document.getElementById("alt_key").checked;
   localStorage["ctrl_key"] = document.getElementById("ctrl_key").checked;
-  localStorage["restricted_distance"] = document.getElementById("restricted_distance").value;
   localStorage["enable_gesture"] = document.getElementById("enable_gesture").checked;
 
 
@@ -68,12 +65,6 @@ function restoreOptions() {
   var ctrl_key = localStorage["ctrl_key"];
   document.getElementById("ctrl_key").checked = ctrl_key == "true";
 
-  var d = localStorage["restricted_distance"];
-  if (!d) {
-    document.getElementById("restricted_distance").value="16";
-  } else {
-    document.getElementById("restricted_distance").value=d;
-  }
   var enable_gesture = localStorage["enable_gesture"];
   document.getElementById("enable_gesture").checked = enable_gesture == "true";
 
@@ -83,7 +74,6 @@ function resetOptions() {
   var engine = "http://www.google.com/search?&q=";
   var input_text = document.getElementById("search_engine");
   input_text.value = engine;
-  document.getElementById("restricted_distance").value="16";
   document.getElementById("ctrl_key").checked = true;
   document.getElementById("alt_key").checked = true;
   document.getElementById("enable_gesture").checked = true;
@@ -92,7 +82,7 @@ function resetOptions() {
 
 <body onload="restoreOptions()">
 <div class="title">Chrome Drag and Go options</div>
-<div class="author">&copy; 2009-2010 Wenzhang Zhu.</div>
+<div class="author">&copy; 2009-2011 Wenzhang Zhu.</div>
 <div class="options">
 <div class="head">Search Engine query string</div>
 <div class="item_group">
@@ -101,7 +91,7 @@ function resetOptions() {
 <div class="item_group">
 <input type="checkbox" id="alt_key" value="alt_key"> ALT key is pressed.<br/>
 <input type="checkbox" id="ctrl_key" value="ctrl_key"> CTRT key is pressed.<br/>
-The mouse is dragged less than <input class="text_input distance_string" type="text" id="restricted_distance" value="16" maxlength=2> pixels away from the original point when it is released.</div>
+</div>
 </div>
 <div class="head">Mouse gestures.</div>
 <div class="item_group">
