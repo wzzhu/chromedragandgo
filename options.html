@@ -1,16 +1,16 @@
 <html>
 <head><title>Drag and Go Extension Options</title></head>
 <style type="text/css">
-	.head{font-size:14px;padding-left:10px;font-weight:bold}
-	.item_group{padding-top:5px;padding-left:12px;padding-bottom:10px}
-	.title{height:40px;padding-top:10px;padding-left:50px;font-size:28px;font-weight:bold;
-	background-image:url('dragandgo_48x48.png'); background-repeat:no-repeat;}
+  .head{font-size:14px;padding-left:10px;font-weight:bold}
+  .item_group{padding-top:5px;padding-left:12px;padding-bottom:10px}
+  .title{height:40px;padding-top:10px;padding-left:50px;font-size:28px;font-weight:bold;
+  background-image:url('dragandgo_48x48.png'); background-repeat:no-repeat;}
         .author{height:18px;padding-top:0px;padding-left:150px;font-size:12px;}
         .options{padding-top:5px; padding-bottom:5px;background-color:white;width:600px;}
-	.text_input{border-bottom:thin solid gray; border-top:none; border-left:none;border-right:none;color:blue}
-	.query_string{width:550}
-	.hint{padding-top:10px; padding-bottom:10px;padding-left:20px;visibility:hidden;background-color:lightyellow;color:blue}
-	.description{padding-left:22px;}
+  .text_input{border-bottom:thin solid gray; border-top:none; border-left:none;border-right:none;color:blue}
+  .query_string{width:550}
+  .hint{padding-top:10px; padding-bottom:10px;padding-left:20px;visibility:hidden;background-color:lightyellow;color:blue}
+  .description{padding-left:22px;}
 </style>
 <script type="text/javascript">
 function notifyOptionChange(tabs) {
@@ -24,7 +24,8 @@ function notifyOptionChange(tabs) {
         alt_key: localStorage["alt_key"],
         ctrl_key: localStorage["ctrl_key"],
         search_engine: localStorage["search_engine"],
-	      enable_gesture: localStorage["enable_gesture"]
+        enable_gesture: localStorage["enable_gesture"],
+        use_right_button: localStorage["use_right_button"]
       }
     });
   }
@@ -41,8 +42,10 @@ function saveOptions() {
   localStorage["search_engine"] = engine;
   localStorage["alt_key"] = document.getElementById("alt_key").checked;
   localStorage["ctrl_key"] = document.getElementById("ctrl_key").checked;
-  localStorage["enable_gesture"] = document.getElementById("enable_gesture").checked;
-
+  localStorage["enable_gesture"] =
+      document.getElementById("enable_gesture").checked;
+  localStorage["use_right_button"] =
+      document.getElementById("use_right_button").checked;
 
   chrome.windows.getAll({populate: true}, iterateWindows);
   var hint = document.getElementById("hint");
@@ -68,6 +71,10 @@ function restoreOptions() {
   var enable_gesture = localStorage["enable_gesture"];
   document.getElementById("enable_gesture").checked = enable_gesture == "true";
 
+  var use_right_button = localStorage["use_right_button"];
+  document.getElementById("use_right_button").checked =
+      use_right_button == "true";
+
 }
 
 function resetOptions() {
@@ -77,6 +84,7 @@ function resetOptions() {
   document.getElementById("ctrl_key").checked = true;
   document.getElementById("alt_key").checked = true;
   document.getElementById("enable_gesture").checked = true;
+  document.getElementById("use_right_button").checked = false;
 }
 </script>
 
@@ -95,16 +103,19 @@ function resetOptions() {
 </div>
 <div class="head">Mouse gestures.</div>
 <div class="item_group">
-<input type="checkbox" id="enable_gesture" value="enable_gesture"> Support 6 most frequently used mouse gestures.<br/>
+<input type="checkbox" id="use_right_button" value="use_right_button">
+  Use right mouse key (Default left key).<br/>
+<input type="checkbox" id="enable_gesture" value="enable_gesture">
+  Support 6 most frequently used mouse gestures.<br/>
 <div class="description">
-	Usage: Support left mouse (Making life easier for touch pad users!)
-	<ul>
-		<li>	Left -- Back </li>
-		<li>    Right -- Forward </li>
-		<li>    Up Down -- Refresh </li>
-		<li>    Down Right -- Close </li>
-		<li>    Up -- Scroll up </li>
-		<li>    Down -- Scroll down </li>
+  Usage: Support left mouse (Making life easier for touch pad users!)
+  <ul>
+    <li>  Left -- Back </li>
+    <li>    Right -- Forward </li>
+    <li>    Up Down -- Refresh </li>
+    <li>    Down Right -- Close </li>
+    <li>    Up -- Scroll up </li>
+    <li>    Down -- Scroll down </li>
 </ul>
 </div>
 <div class="head"><button onclick="saveOptions()">Save</button>

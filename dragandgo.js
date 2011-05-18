@@ -1,10 +1,11 @@
-// Copyright(c) 2010 Wenzhang Zhu.
+// Copyright(c) 2011 Wenzhang Zhu.
 // All rights reserved.
 
 var chromeVersion = {
   version: [0, 0, 0, 0],
   getVersion: function() {
-    var match = navigator.userAgent.match(/Chrome\/(\d+)\.(\d+)\.(\d+)\.(\d+)/);
+    var match =
+        navigator.userAgent.match(/Chrome\/(\d+)\.(\d+)\.(\d+)\.(\d+)/);
     if (match) {
       this.version[0] = parseInt(match[1]);
       this.version[1] = parseInt(match[2]);
@@ -83,6 +84,7 @@ function Canvas() {
 
 var gesture = {
   in_gesture: false,
+  should_close_context_menu: false,
   seq: "",  // Gesture sequence
   last_pos: {
     x: -1,
@@ -113,7 +115,9 @@ var gesture = {
     if (window.getSelection().rangeCount > 0) {
       range = window.getSelection().getRangeAt(0);
     }
-    if (!this.canvas.hasCanvas() && range &&
+    var use_right_button = local_options["use_right_button"] == "true";
+    if (!use_right_button &&
+        !this.canvas.hasCanvas() && range &&
         range.startContainer == range.endContainer &&
         (range.startContainer.nodeName == "#text" &&
          range.startOffset < range.startContainer.length &&
@@ -183,6 +187,7 @@ var gesture = {
       this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, true);
       if (this.takeAction(this.seq)) {
         window.getSelection().empty();
+        this.should_close_context_menu = true;
       }
       this.seq = "";
       this.canvas.hideCanvas();
@@ -379,6 +384,12 @@ function drop(e) {
 }
 
 function mouseDown(e) {
+  var use_right_button = local_options["use_right_button"] == "true";
+  if (!((use_right_button && e.button == 2) || 
+       (!use_right_button && e.button == 0))) {
+    gesture.cancelGesture(e);
+    return true;
+  }
   var use_gesture = local_options["enable_gesture"] == "true";
   if (use_gesture && !e.ctrlKey && !e.altKey && !gesture.in_gesture) {
     document.addEventListener('mousemove', mouseMove, false);
@@ -405,6 +416,15 @@ function mouseMove(e) {
   return true;
 }
 
+function onContextMenu(e) {
+  var use_right_button = local_options["use_right_button"] == "true";
+  var use_gesture = local_options["enable_gesture"] == "true";
+  if (use_right_button && use_gesture && gesture.should_close_context_menu) {
+    e.preventDefault();
+  }
+  gesture.should_close_context_menu = false;
+}
+
 document.addEventListener('dragstart', dragStart, false);
 document.addEventListener('dragover', dragOver, false);
 if (!chromeVersion.isLargerThanOrEqual([5, 0, 371, 0]) &&
@@ -416,6 +436,7 @@ if (!chromeVersion.isLargerThanOrEqual([5, 0, 371, 0]) &&
 }
 document.addEventListener('mousedown', mouseDown, false);
 document.addEventListener('mouseup', mouseUp, false);
+document.addEventListener('contextmenu', onContextMenu, true);
 
 chrome.extension.sendRequest({message: 'get_options'}, function(response) {
   local_options = response;

@@ -55,11 +55,13 @@ chrome.extension.onConnect.addListener(connectionHandler);
 chrome.extension.onRequest.addListener(
   function(request, sender, sendResponse) {
     if (request.message == "get_options") {
-      sendResponse({alt_key: localStorage["alt_key"],
-  	            ctrl_key: localStorage["ctrl_key"],
-	            search_engine: localStorage["search_engine"],
-		    restricted_distance: localStorage["restricted_distance"],
-	            enable_gesture: localStorage["enable_gesture"]});
+      sendResponse({
+          alt_key: localStorage["alt_key"],
+          ctrl_key: localStorage["ctrl_key"],
+          search_engine: localStorage["search_engine"],
+          restricted_distance: localStorage["restricted_distance"],
+          enable_gesture: localStorage["enable_gesture"],
+          use_right_button: localStorage["use_right_button"]});
     }
   });
 </script>
