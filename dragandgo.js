@@ -254,7 +254,7 @@ var drag_and_go = {
     var data;
     var data_type = "text";
     var selection = window.getSelection();
-    var parent_node = e.srcElement.parentNode;
+    var parent_node = e.srcElement;
     while(parent_node && parent_node.nodeName != "A") {
       parent_node = parent_node.parentNode;
     }
