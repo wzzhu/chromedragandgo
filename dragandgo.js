@@ -1,38 +1,10 @@
 // Copyright(c) 2011 Wenzhang Zhu.
 // All rights reserved.
-
-var chromeVersion = {
-  version: [0, 0, 0, 0],
-  getVersion: function() {
-    var match =
-        navigator.userAgent.match(/Chrome\/(\d+)\.(\d+)\.(\d+)\.(\d+)/);
-    if (match) {
-      this.version[0] = parseInt(match[1]);
-      this.version[1] = parseInt(match[2]);
-      this.version[2] = parseInt(match[3]);
-      this.version[3] = parseInt(match[4]);
-    }
-  },
-
-  // Checks if it is larger or equal to given version.
-  isLargerThanOrEqual: function(ver_to_check) {
-    var larger_or_equal = true;
-    if (this.version[0] == 0) {
-      this.getVersion();
-    }
-    for (i = 0; i < 4; ++i) {
-      if (this.version[i] > ver_to_check[i]) {
-        break;
-      } else if (this.version[i] < ver_to_check[i]) {
-        larger_or_equal = false;
-        break;
-      }
-    }
-    return larger_or_equal;
-  }
-};
-
+//
+// Super drag and go content script. Handle mouse events for mouse gesture
+// and drag.
 var local_options = {};
+
 function Canvas() {
   this.html_canvas = document.createElement("canvas");
   this.ctx = this.html_canvas.getContext("2d");
@@ -72,7 +44,7 @@ function Canvas() {
   this.hasCanvas = function() {
     return (this.html_canvas.parentNode &&
             this.html_canvas.parentNode.lastChild == this.html_canvas);
-  }
+  };
 
   this.hideCanvas = function() {
     if (this.html_canvas.parentNode &&
@@ -260,6 +232,7 @@ var drag_and_go = {
     }
     if (parent_node) {
       if (parent_node.href.substr(0, 11) != "javascript:") {
+        data_type = "link";
         data = parent_node.href;
       }
     } else if (e.srcElement.nodeName == "IMG") {
@@ -289,6 +262,7 @@ var drag_and_go = {
     if (this.drag_selection.type == "text") {
       var link = this.getTextLink(this.drag_selection.data);
       if (link != "") {
+        // Update the selection from text type to link
         this.drag_selection.type = "link";
         this.drag_selection.data = link;
       } else {
@@ -365,21 +339,10 @@ function dragOver(e) {
 }
 
 function dragEnd(e) {
-  if (!chromeVersion.isLargerThanOrEqual([5, 0, 371, 0]) &&
-      chromeVersion.isLargerThanOrEqual([4, 1, 249, 0])) {
-    return drag_and_go.drop(e);
-  }
   return drag_and_go.dragEnd(e);
 }
 
 function drop(e) {
-  if (!chromeVersion.isLargerThanOrEqual([5, 0, 371, 0]) &&
-      chromeVersion.isLargerThanOrEqual([4, 1, 249, 0])) {
-    if (e.dataTransfer.dropEffect == "copy") {
-      return drag_and_go.drop(e);
-    }
-    return true;
-  }
   return drag_and_go.drop(e);
 }
 
@@ -427,13 +390,8 @@ function onContextMenu(e) {
 
 document.addEventListener('dragstart', dragStart, false);
 document.addEventListener('dragover', dragOver, false);
-if (!chromeVersion.isLargerThanOrEqual([5, 0, 371, 0]) &&
-    chromeVersion.isLargerThanOrEqual([4, 1, 249, 0])) {
-  document.addEventListener('dragend', drop, false);
-} else {
-  document.addEventListener('drop', drop, false);
-  document.addEventListener('dragend', dragEnd, false);
-}
+document.addEventListener('drop', drop, false);
+document.addEventListener('dragend', dragEnd, false);
 document.addEventListener('mousedown', mouseDown, false);
 document.addEventListener('mouseup', mouseUp, false);
 document.addEventListener('contextmenu', onContextMenu, true);
