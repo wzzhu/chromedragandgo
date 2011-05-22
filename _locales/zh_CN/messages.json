@@ -1,0 +1,87 @@
+﻿{
+  "extName": {
+    "message": "超级拖曳",
+    "description": "Extension name." },
+
+  "extDescription": {
+    "message": "超级拖曳，附带6个最常用鼠标手势。",
+    "description": "Description."
+  },
+
+  "option_title": {
+    "message": "Chrome超级拖曳选项"
+  },
+
+  "option_copyright": {
+    "message": "Wenzhang Zhu"
+  },
+
+  "option_search_engine_title": {
+    "message": "搜索引擎"
+  },
+
+  "option_search_engine": {
+    "message": "搜索引擎的查询字符串"
+  },
+
+  "option_disable_drag": {
+    "message": "下列任何一个条件满足，则超级拖曳无效"
+  },
+
+  "option_gesture_title": {
+    "message": "鼠标手势"
+  },
+
+  "option_right_button": {
+    "message": "手势使用鼠标右键（如果不选此项，默认为鼠标左键）"
+  },
+
+  "option_alt_key": {
+    "message": "按下ALT键"
+  },
+
+  "option_ctrl_key": {
+    "message": "按下CTRL键"
+  },
+
+  "option_enable_gesture": {
+    "message": "支持6个常用鼠标手势。"
+  },
+
+  "option_gesture_left": {
+    "message": "向后"
+  },
+
+  "option_gesture_right": {
+    "message": "向前"
+  },
+
+  "option_gesture_up_down": {
+    "message": "刷新"
+  },
+
+  "option_gesture_down_right": {
+    "message": "关闭"
+  },
+
+  "option_gesture_up": {
+    "message": "向上翻页"
+  },
+
+  "option_gesture_down": {
+    "message": "向下翻页"
+  },
+ 
+  "option_save": {
+    "message": "保存设置",
+    "description": "Button text to save the options"
+  },
+
+  "option_reset": {
+    "message": "恢复设置"
+  },
+
+  "option_hint": {
+    "message": "设置已保存。"
+  }
+}
