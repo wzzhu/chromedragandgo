@@ -1,125 +1,167 @@
 <html>
-<head><title>Drag and Go Extension Options</title></head>
-<style type="text/css">
-  .head{font-size:14px;padding-left:10px;font-weight:bold}
-  .item_group{padding-top:5px;padding-left:12px;padding-bottom:10px}
-  .title{height:40px;padding-top:10px;padding-left:50px;font-size:28px;font-weight:bold;
-  background-image:url('dragandgo_48x48.png'); background-repeat:no-repeat;}
-        .author{height:18px;padding-top:0px;padding-left:150px;font-size:12px;}
-        .options{padding-top:5px; padding-bottom:5px;background-color:white;width:600px;}
-  .text_input{border-bottom:thin solid gray; border-top:none; border-left:none;border-right:none;color:blue}
-  .query_string{width:550}
-  .hint{padding-top:10px; padding-bottom:10px;padding-left:20px;visibility:hidden;background-color:lightyellow;color:blue}
-  .description{padding-left:22px;}
-</style>
-<script type="text/javascript">
-function notifyOptionChange(tabs) {
-  for (var i = 0; i < tabs.length; ++i) {
-  var tab = tabs[i];
-  chrome.tabs.sendRequest(
-    tab.id,
-    {
-      message: "set_options",
-      options: {
-        alt_key: localStorage["alt_key"],
-        ctrl_key: localStorage["ctrl_key"],
-        search_engine: localStorage["search_engine"],
-        enable_gesture: localStorage["enable_gesture"],
-        use_right_button: localStorage["use_right_button"]
+  <head><title>Drag and Go Extension Options</title></head>
+  <style type="text/css">
+    .head{font-size:14px;padding-left:10px;font-weight:bold;}
+    .item_group{padding-top:5px;padding-left:12px;padding-bottom:10px}
+    .option_title{background-color:#C0C0C0;width:570px;}
+    .title{height:40px;padding-top:10px;padding-left:50px;font-size:28px;
+           font-weight:bold;
+           background-image:url('dragandgo_48x48.png');
+           background-repeat:no-repeat;}
+    .author{height:18px;padding-top:0px;padding-left:150px;font-size:12px;}
+    .options{padding-top:5px; padding-bottom:5px;width:550px;
+             bottom-margin:20px;}
+    .text_input{border-bottom:thin solid gray; border-top:none;
+                border-left:none;border-right:none;color:blue}
+    .query_string{width:550}
+    .hint{padding-top:10px; padding-bottom:10px;
+          padding-left:20px;visibility:hidden;
+          background-color:lightyellow;color:blue}
+    .description{padding-left:22px;padding-bottom:20px;}
+  </style>
+  <script type="text/javascript">
+    function notifyOptionChange(tabs) {
+      for (var i = 0; i < tabs.length; ++i) {
+        var tab = tabs[i];
+        chrome.tabs.sendRequest(
+        tab.id,
+        {
+          message: "set_options",
+          options: {
+            alt_key: localStorage["alt_key"],
+            ctrl_key: localStorage["ctrl_key"],
+            search_engine: localStorage["search_engine"],
+            enable_gesture: localStorage["enable_gesture"],
+            use_right_button: localStorage["use_right_button"]
+          }
+        });
       }
-    });
-  }
-}
+    }
 
-function iterateWindows(windows) {
-  for (var i = 0; i < windows.length; ++i) {
-    chrome.tabs.getAllInWindow(windows[i].id, notifyOptionChange);
-  }
-}
+    function iterateWindows(windows) {
+      for (var i = 0; i < windows.length; ++i) {
+        chrome.tabs.getAllInWindow(windows[i].id, notifyOptionChange);
+      }
+    }
 
-function saveOptions() {
-  var engine = document.getElementById("search_engine").value;  
-  localStorage["search_engine"] = engine;
-  localStorage["alt_key"] = document.getElementById("alt_key").checked;
-  localStorage["ctrl_key"] = document.getElementById("ctrl_key").checked;
-  localStorage["enable_gesture"] =
-      document.getElementById("enable_gesture").checked;
-  localStorage["use_right_button"] =
-      document.getElementById("use_right_button").checked;
+    function saveOptions() {
+      var engine = document.getElementById("search_engine").value;
+      localStorage["search_engine"] = engine;
+      localStorage["alt_key"] = document.getElementById("alt_key").checked;
+      localStorage["ctrl_key"] = document.getElementById("ctrl_key").checked;
+      localStorage["enable_gesture"] =
+        document.getElementById("enable_gesture").checked;
+      localStorage["use_right_button"] =
+        document.getElementById("use_right_button").checked;
 
-  chrome.windows.getAll({populate: true}, iterateWindows);
-  var hint = document.getElementById("hint");
-  hint.style.visibility = "visible";
-  setTimeout("document.getElementById('hint').style.visibility='hidden';",
-             1500);
-}
+      chrome.windows.getAll({populate: true}, iterateWindows);
+      var hint = document.getElementById("hint");
+      hint.style.visibility = "visible";
+      setTimeout("document.getElementById('hint').style.visibility='hidden';",
+      1500);
+    }
 
-function restoreOptions() {
-  var engine = localStorage["search_engine"];
-  if (!engine) {
-    engine = "http://www.google.com/search?&q=";
-  }
-  var input_text = document.getElementById("search_engine");
-  input_text.value = engine;
+    function restoreOptions() {
+      var engine = localStorage["search_engine"];
+      if (!engine) {
+        engine = "http://www.google.com/search?&q=";
+      }
+      var input_text = document.getElementById("search_engine");
+      input_text.value = engine;
 
-  var alt_key = localStorage["alt_key"];
-  document.getElementById("alt_key").checked = alt_key == "true";
+      var alt_key = localStorage["alt_key"];
+      document.getElementById("alt_key").checked = alt_key == "true";
 
-  var ctrl_key = localStorage["ctrl_key"];
-  document.getElementById("ctrl_key").checked = ctrl_key == "true";
+      var ctrl_key = localStorage["ctrl_key"];
+      document.getElementById("ctrl_key").checked = ctrl_key == "true";
 
-  var enable_gesture = localStorage["enable_gesture"];
-  document.getElementById("enable_gesture").checked = enable_gesture == "true";
+      var enable_gesture = localStorage["enable_gesture"];
+      document.getElementById("enable_gesture").checked =
+          enable_gesture == "true";
 
-  var use_right_button = localStorage["use_right_button"];
-  document.getElementById("use_right_button").checked =
-      use_right_button == "true";
+      var use_right_button = localStorage["use_right_button"];
+      document.getElementById("use_right_button").checked =
+        use_right_button == "true";
 
-}
+    }
 
-function resetOptions() {
-  var engine = "http://www.google.com/search?&q=";
-  var input_text = document.getElementById("search_engine");
-  input_text.value = engine;
-  document.getElementById("ctrl_key").checked = true;
-  document.getElementById("alt_key").checked = true;
-  document.getElementById("enable_gesture").checked = true;
-  document.getElementById("use_right_button").checked = false;
-}
-</script>
+    function resetOptions() {
+      var engine = "http://www.google.com/search?&q=";
+      var input_text = document.getElementById("search_engine");
+      input_text.value = engine;
+      document.getElementById("ctrl_key").checked = true;
+      document.getElementById("alt_key").checked = true;
+      document.getElementById("enable_gesture").checked = true;
+      document.getElementById("use_right_button").checked = false;
+    }
 
-<body onload="restoreOptions()">
-<div class="title">Chrome Drag and Go options</div>
-<div class="author">&copy; 2009-2011 Wenzhang Zhu.</div>
-<div class="options">
-<div class="head">Search Engine query string</div>
-<div class="item_group">
-<input type="text" class="text_input query_string" id="search_engine" size=80></div>
-<div class="head">Disable drag and go if any of the following conditions is satisfied.</div>
-<div class="item_group">
-<input type="checkbox" id="alt_key" value="alt_key"> ALT key is pressed.<br/>
-<input type="checkbox" id="ctrl_key" value="ctrl_key"> CTRT key is pressed.<br/>
-</div>
-</div>
-<div class="head">Mouse gestures.</div>
-<div class="item_group">
-<input type="checkbox" id="use_right_button" value="use_right_button">
-  Use right mouse key (Default left key).<br/>
-<input type="checkbox" id="enable_gesture" value="enable_gesture">
-  Support 6 most frequently used mouse gestures.<br/>
-<div class="description">
-  Usage: Support left mouse (Making life easier for touch pad users!)
-  <ul>
-    <li>  Left -- Back </li>
-    <li>    Right -- Forward </li>
-    <li>    Up Down -- Refresh </li>
-    <li>    Down Right -- Close </li>
-    <li>    Up -- Scroll up </li>
-    <li>    Down -- Scroll down </li>
-</ul>
-</div>
-<div class="head"><button onclick="saveOptions()">Save</button>
-<button onclick="resetOptions()">Reset</button></div>
-<div class="hint" id="hint">Options saved.</div>
-</body>
+    function i18n(id, name) {
+      document.getElementById(id).innerText = chrome.i18n.getMessage(name)
+    }
+
+    function loadI18nStrings() {
+      i18n("title", "option_title");
+      i18n("author", "option_copyright");
+      i18n("search_engine_title", "option_search_engine_title");
+      i18n("disable_drag", "option_disable_drag");
+      i18n("alt_key_label", "option_alt_key");
+      i18n("ctrl_key_label", "option_ctrl_key");
+      i18n("gesture_title", "option_gesture_title");
+      i18n("use_right_button_label", "option_right_button");
+      i18n("enable_gesture_label", "option_enable_gesture");
+      i18n("left", "option_gesture_left");
+      i18n("right", "option_gesture_right");
+      i18n("up_down", "option_gesture_up_down");
+      i18n("down_right", "option_gesture_down_right");
+      i18n("up", "option_gesture_up");
+      i18n("down", "option_gesture_down");
+      i18n("save", "option_save");
+      i18n("reset", "option_reset");
+      i18n("hint", "option_hint");
+    }
+
+    function init() {
+      restoreOptions();
+      loadI18nStrings();
+    }
+
+  </script>
+
+  <body onload="init()" class="body">
+    <div class="option_title">
+      <div class="title" id="title"></div>
+      <div class="author" >&copy; 2009 - 2011 <span id="author"></span></div>
+    </div>
+    <div class="options">
+      <div class="head" id="search_engine_title"></div>
+      <div class="item_group">
+        <input type="text" class="text_input query_string" id="search_engine"
+               size=80></div>
+      <div class="head" id="disable_drag"></div>
+      <div class="item_group">
+          <input type="checkbox" id="alt_key" value="alt_key">
+          <span id="alt_key_label"></span><br/>
+          <input type="checkbox" id="ctrl_key" value="ctrl_key">
+          <span id="ctrl_key_label"></span>
+      </div>
+      <div class="head" id="gesture_title"></div>
+      <div class="item_group">
+          <input type="checkbox" id="use_right_button" value="use_right_button">
+          <span id="use_right_button_label"></span><br/>
+          <input type="checkbox" id="enable_gesture" value="enable_gesture">
+          <span id="enable_gesture_label"></span>
+          <div class="description">
+          <b>&larr;</b> <span id="left"></span><br/>
+          <b>&rarr;</b> <span id="right"></span><br/>
+          <b>&uarr;&darr;</b> <span id="up_down"></span><br/>
+          <b>&darr;&rarr;</b> <span id="down_right"></span><br/>
+          <b>&uarr;</b> <span id="up"></span><br/>
+          <b>&darr;</b> <span id="down"></span><br/>
+          </div>
+      </div>
+    </div>
+    <div class="head"><button onclick="saveOptions()" id="save"></button>
+      <button onclick="resetOptions()" id="reset"></button></div>
+    <div class="hint" id="hint"></div>
+  </body>
 </html>
