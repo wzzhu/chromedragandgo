@@ -68,7 +68,7 @@ var gesture = {
     y: -1
   },  // Last mouse position
   start_time: 0,
-  valid_gestures: ["L", "R", "UD", "DL", "U", "D"],
+  valid_gestures: ["L", "R", "UD", "DR", "U", "D"],
   beginGesture: function(e) {
     this.in_gesture = true;
     this.seq = "";
