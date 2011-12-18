@@ -12,8 +12,8 @@ function Canvas() {
     this.html_canvas.setAttribute("width", window.innerWidth + "px");
     this.html_canvas.setAttribute("height", window.innerHeight + "px");
     this.html_canvas.setAttribute(
-        "style", "z-index:100;position:fixed" +
-        ";top:0px;left:0px");
+      "style", "z-index:100;position:fixed" +
+      ";top:0px;left:0px");
     this.ctx.fillStyle = fill_style;
     this.ctx.strokeStyle = stroke_style;
     this.ctx.lineWidth = line_width;
@@ -43,12 +43,12 @@ function Canvas() {
 
   this.hasCanvas = function() {
     return (this.html_canvas.parentNode &&
-            this.html_canvas.parentNode.lastChild == this.html_canvas);
+      this.html_canvas.parentNode.lastChild == this.html_canvas);
   };
 
   this.hideCanvas = function() {
     if (this.html_canvas.parentNode &&
-        this.html_canvas.parentNode.lastChild == this.html_canvas) {
+      this.html_canvas.parentNode.lastChild == this.html_canvas) {
       this.html_canvas.parentNode.removeChild(this.html_canvas);
     }
   };
@@ -57,12 +57,18 @@ function Canvas() {
 var gesture = {
   in_gesture: false,
   should_close_context_menu: false,
+  suspended: false,
   seq: "",  // Gesture sequence
+  // The number of misses in gesture. When number of misses is >= 2, we will
+  // suspend the gesture in this page. The reason is that user might want to
+  // select text or do other mouse operation (like in Google map) instead.
+  miss: 0,
   last_pos: {
     x: -1,
     y: -1
   },  // Last mouse position
   start_time: 0,
+  valid_gestures: ["L", "R", "UD", "DL", "U", "D"],
   beginGesture: function(e) {
     this.in_gesture = true;
     this.seq = "";
@@ -89,24 +95,33 @@ var gesture = {
     }
     var use_right_button = local_options["use_right_button"] == "true";
     if (!use_right_button &&
-        !this.canvas.hasCanvas() && range &&
-        range.startContainer == range.endContainer &&
-        (range.startContainer.nodeName == "#text" &&
-         range.startOffset < range.startContainer.length &&
-         range.endOffset < range.endContainer.length ||
-         range.startOffset == range.endOffset)) {
+      !this.canvas.hasCanvas() && range &&
+      range.startContainer == range.endContainer &&
+      (range.startContainer.nodeName == "#text" &&
+        range.startOffset < range.startContainer.length &&
+        range.endOffset < range.endContainer.length ||
+        range.startOffset == range.endOffset)) {
       this.cancelGesture(e);
       return true;
     }
     this.canvas.showCanvas(this.last_pos.x, this.last_pos.y, document.body);
     if (this.seq.length > 3) {
+      if (!this.use_right_button) {
+        ++this.miss;
+        if (this.miss >= 2) {
+          this.miss = 2;
+          this.suspended = true;
+        }
+      }
       this.cancelGesture();
       window.getSelection().empty();
       return true;
     }
     this.collectGestures(e);
     window.getSelection().empty();
-    this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, false);
+    if (!this.suspended) {
+      this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, false);
+    }
     return false;
   },
 
@@ -138,7 +153,7 @@ var gesture = {
         }
       }
       if (this.seq.length <=0 ||
-          this.seq.substr(this.seq.length - 1, 1) != new_gesture) {
+        this.seq.substr(this.seq.length - 1, 1) != new_gesture) {
         this.seq = this.seq + new_gesture;
       }
     }
@@ -181,23 +196,47 @@ var gesture = {
   },
 
   takeAction: function(seq) {
-    if (this.seq == "L") {
-      history.back();
-    } else if (this.seq == "R") {
-      history.forward();
-    } else if (this.seq == "U") {
-      window.scrollBy(0, -window.innerHeight * 4 / 5);
-    } else if (this.seq == "D") {
-      window.scrollBy(0, window.innerHeight * 4 / 5);
-    } else if (this.seq == "DR") {
-      window.open('', '_self', '');
-      window.close();
-    } else if (this.seq == "UD") {
-      location.reload(true);
-    } else {
-      return false;
+    var valid_gesture = false;
+    for (var i = 0; i < this.valid_gestures.length; ++i) {
+      if (seq == this.valid_gestures[i]) {
+        valid_gesture = true;
+        break;
+      }
     }
-    return true;
+    if (this.suspended) {
+      if (valid_gesture) {
+        --this.miss;
+        if (this.miss <= 0) {
+          this.miss = 0;
+          this.suspended = false;
+        }
+      }
+    }
+    if (!this.suspended && valid_gesture) {
+      if (this.seq == "L") {
+        history.back();
+      } else if (this.seq == "R") {
+        history.forward();
+      } else if (this.seq == "U") {
+        window.scroll(0, 0);
+      } else if (this.seq == "D") {
+        window.scroll(0, document.body.scrollHeight);
+      } else if (this.seq == "DR") {
+        window.open('', '_self', '');
+        window.close();
+      } else if (this.seq == "UD") {
+        location.reload(true);
+      }
+      return true;
+    }
+    if (!this.use_right_button && !valid_gesture) {
+      ++this.miss;
+      if (this.miss >= 2) {
+        this.miss = 2;
+        this.suspended = true;
+      }
+    }
+    return false;
   }
 };
 
@@ -294,7 +333,7 @@ var drag_and_go = {
       d = 99;
     }
     if ((e.clientX - this.start_x) * (e.clientX - this.start_x) +
-        (e.clientY - this.start_y) * (e.clientY - this.start_y) < d * d) {
+      (e.clientY - this.start_y) * (e.clientY - this.start_y) < d * d) {
       // If the drag distrance is too small (within 16 pixels from
       // the starting point), then no go action.
       return true;
@@ -349,7 +388,7 @@ function drop(e) {
 function mouseDown(e) {
   var use_right_button = local_options["use_right_button"] == "true";
   if (!((use_right_button && e.button == 2) || 
-       (!use_right_button && e.button == 0))) {
+    (!use_right_button && e.button == 0))) {
     gesture.cancelGesture(e);
     return true;
   }
@@ -396,7 +435,9 @@ document.addEventListener('mousedown', mouseDown, false);
 document.addEventListener('mouseup', mouseUp, false);
 document.addEventListener('contextmenu', onContextMenu, true);
 
-chrome.extension.sendRequest({message: 'get_options'}, function(response) {
+chrome.extension.sendRequest({
+  message: 'get_options'
+}, function(response) {
   local_options = response;
 });
 chrome.extension.onRequest.addListener(

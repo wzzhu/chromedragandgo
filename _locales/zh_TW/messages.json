@@ -65,11 +65,11 @@
   },
 
   "option_gesture_up": {
-    "message": "向上翻頁"
+    "message": "滾動到頂部"
   },
 
   "option_gesture_down": {
-    "message": "向下翻頁"
+    "message": "滾動至底部"
   },
  
   "option_save": {

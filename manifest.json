@@ -1,19 +1,21 @@
 {
-   "background_page": "background.htm",
-   "content_scripts": [ {
-      "js": [ "dragandgo.js" ],
-      "matches": [ "http://*/*", "https://*/*", "ftp://*/*" ],
-      "permissions": [ "tabs" ],
-      "all_frames": true,
-      "run_at": "document_start"
-   } ],
-   "permissions": ["tabs"],
-   "description": "__MSG_extDescription__",
-   "name": "__MSG_extName__",
-   "icons": {"32": "dragandgo_32x32.png",
-             "48": "dragandgo_48x48.png",
-             "128": "dragandgo_128x128.png"},
-   "options_page": "options.html",
-   "version": "1.7.3.0",
-   "default_locale": "en"
+  "background_page": "background.htm",
+  "content_scripts": [ {
+    "js": [ "dragandgo.js" ],
+    "matches": [ "http://*/*", "https://*/*", "ftp://*/*" ],
+    "permissions": [ "tabs" ],
+    "all_frames": true,
+    "run_at": "document_start"
+  } ],
+  "permissions": ["tabs"],
+  "description": "__MSG_extDescription__",
+  "name": "__MSG_extName__",
+  "icons": {
+    "32": "dragandgo_32x32.png",
+    "48": "dragandgo_48x48.png",
+    "128": "dragandgo_128x128.png"
+  },
+  "options_page": "options.html",
+  "version": "1.8.0.0",
+  "default_locale": "en"
 }

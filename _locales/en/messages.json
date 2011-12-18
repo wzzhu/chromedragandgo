@@ -1,0 +1,88 @@
+{
+  "extName": {
+    "message": "Drag and Go",
+    "description": "Extension name." },
+
+  "extDescription": {
+    "message": "Super Drag and Go, plus 6 most frequently used gestures.",
+    "description": "Description."
+  },
+
+  "option_title": {
+    "message": "Chrome Drag and Go Options"
+  },
+
+  "option_copyright": {
+    "message": "Wenzhang Zhu"
+  },
+
+  "option_search_engine_title": {
+    "message": "Search Engine"
+  },
+
+  "option_search_engine": {
+    "message": "Search engine query string"
+  },
+
+  "option_disable_drag": {
+    "message": "Disable drag and go if any of the following conditions is satisfied."
+  },
+
+  "option_gesture_title": {
+    "message": "Mouse gesture"
+  },
+
+  "option_right_button": {
+    "message": "Use right mouse key (Uncheck this to use left mouse key by default)."
+  },
+
+  "option_alt_key": {
+    "message": "ALT key is pressed"
+  },
+
+  "option_ctrl_key": {
+    "message": "CTRL key is pressed"
+  },
+
+  "option_enable_gesture": {
+    "message": "Support 6 most frequently used mouse gestures."
+  },
+
+  "option_gesture_left": {
+    "message": "Back"
+  },
+
+  "option_gesture_right": {
+    "message": "Forward"
+  },
+
+  "option_gesture_up_down": {
+    "message": " Refresh"
+  },
+
+  "option_gesture_down_right": {
+    "message": "Close"
+  },
+
+  "option_gesture_up": {
+    "message": "Scroll up to top"
+  },
+
+  "option_gesture_down": {
+    "message": "Scroll down to bottom"
+  },
+ 
+  "option_save": {
+    "message": "Save",
+    "description": "Button text to save the options"
+  },
+
+  "option_reset": {
+    "message": "Reset"
+  },
+
+  "option_hint": {
+    "message": "Options saved."
+  }
+}
+
