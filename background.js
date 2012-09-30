@@ -1,5 +1,3 @@
-<html><head>
-<script>
 function tabAction(tab, drag_data) {
   var new_idx = tab.index;
   if (drag_data.x_dir > 0) {
@@ -52,7 +50,7 @@ function initSettings() {
 
 initSettings();
 chrome.extension.onConnect.addListener(connectionHandler);
-chrome.extension.onRequest.addListener(
+chrome.extension.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.message == "get_options") {
       sendResponse({
@@ -64,7 +62,3 @@ chrome.extension.onRequest.addListener(
           use_right_button: localStorage["use_right_button"]});
     }
   });
-</script>
-</head>
-<body></body>
-</html>
