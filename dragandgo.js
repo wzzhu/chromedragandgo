@@ -12,8 +12,8 @@ function Canvas() {
     this.html_canvas.setAttribute("width", window.innerWidth + "px");
     this.html_canvas.setAttribute("height", window.innerHeight + "px");
     this.html_canvas.setAttribute(
-      "style", "z-index:100;position:fixed" +
-      ";top:0px;left:0px");
+      "style",
+      "z-index:100;position:fixed;top:0px;left:0px");
     this.ctx.fillStyle = fill_style;
     this.ctx.strokeStyle = stroke_style;
     this.ctx.lineWidth = line_width;
@@ -41,14 +41,14 @@ function Canvas() {
     }
   };
 
-  this.hasCanvas = function() {
+  this.hasCanvas = function () {
     return (this.html_canvas.parentNode &&
-      this.html_canvas.parentNode.lastChild == this.html_canvas);
+            this.html_canvas.parentNode.lastChild == this.html_canvas);
   };
 
-  this.hideCanvas = function() {
+  this.hideCanvas = function () {
     if (this.html_canvas.parentNode &&
-      this.html_canvas.parentNode.lastChild == this.html_canvas) {
+        this.html_canvas.parentNode.lastChild == this.html_canvas) {
       this.html_canvas.parentNode.removeChild(this.html_canvas);
     }
   };
@@ -69,7 +69,7 @@ var gesture = {
   },  // Last mouse position
   start_time: 0,
   valid_gestures: ["L", "R", "UD", "DR", "U", "D"],
-  beginGesture: function(e) {
+  beginGesture: function (e) {
     this.in_gesture = true;
     this.seq = "";
     this.last_pos = {
@@ -81,7 +81,7 @@ var gesture = {
   },
   canvas: new Canvas(),
 
-  moveGesture: function(e) {
+  moveGesture: function (e) {
     if (!this.in_gesture) {
       return true;
     }
@@ -94,13 +94,12 @@ var gesture = {
       range = window.getSelection().getRangeAt(0);
     }
     var use_right_button = local_options["use_right_button"] == "true";
-    if (!use_right_button &&
-      !this.canvas.hasCanvas() && range &&
-      range.startContainer == range.endContainer &&
-      (range.startContainer.nodeName == "#text" &&
-        range.startOffset < range.startContainer.length &&
-        range.endOffset < range.endContainer.length ||
-        range.startOffset == range.endOffset)) {
+    if (!use_right_button && !this.canvas.hasCanvas() && range &&
+        range.startContainer == range.endContainer &&
+        (range.startContainer.nodeName == "#text" &&
+         range.startOffset < range.startContainer.length &&
+         range.endOffset < range.endContainer.length ||
+         range.startOffset == range.endOffset)) {
       this.cancelGesture(e);
       return true;
     }
@@ -125,7 +124,7 @@ var gesture = {
     return false;
   },
 
-  collectGestures: function(e) {
+  collectGestures: function (e) {
     if (this.last_pos.x < 0 || this.last_pos.y < 0) {
       this.last_pos = {
         x: e.clientX,
@@ -152,8 +151,8 @@ var gesture = {
           new_gesture = "U";
         }
       }
-      if (this.seq.length <=0 ||
-        this.seq.substr(this.seq.length - 1, 1) != new_gesture) {
+      if (this.seq.length <= 0 ||
+          this.seq.substr(this.seq.length - 1, 1) != new_gesture) {
         this.seq = this.seq + new_gesture;
       }
     }
@@ -164,7 +163,7 @@ var gesture = {
     return false;
   },
 
-  endGesture: function(e) {
+  endGesture: function (e) {
     if (!this.in_gesture) {
       return true;
     }
@@ -179,7 +178,7 @@ var gesture = {
       this.seq = "";
       this.canvas.hideCanvas();
       if (e.preventDefault) {
-        e.preventDefault ();
+        e.preventDefault();
       }
     }
     document.removeEventListener('mousemove', mouseMove, false);
@@ -190,12 +189,12 @@ var gesture = {
     return false;
   },
 
-  cancelGesture: function(e) {
+  cancelGesture: function (e) {
     this.in_gesture = false;
     this.canvas.hideCanvas();
   },
 
-  takeAction: function(seq) {
+  takeAction: function (seq) {
     var valid_gesture = false;
     for (var i = 0; i < this.valid_gestures.length; ++i) {
       if (seq == this.valid_gestures[i]) {
@@ -251,8 +250,10 @@ var drag_and_go = {
 
   // Extract the link from the given text if any.
   // Otherwise return empty string.
-  getTextLink: function(text) {
-    var re = /((http|ftp|https):\/\/|www\.)[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:\/~\+#\*!]*[\w\-\.,@?^=%&:\/~\+#\*!])?/;
+  getTextLink: function (text) {
+    var re = new RegExp(
+        "((http|ftp|https):\/\/|www\.)[\w\-_]+(\.[\w\-_]+)+" +
+        "([\w\-\.,@?^=%&:\/~\+#\*!]*[\w\-\.,@?^=%&:\/~\+#\*!])?");
     var link = "";
     var matches = text.match(re);
     if (matches) {
@@ -261,12 +262,12 @@ var drag_and_go = {
     return link;
   },
 
-  getDragSelection: function(e) {
+  getDragSelection: function (e) {
     var data;
     var data_type = "text";
     var selection = window.getSelection();
     var parent_node = e.srcElement;
-    while(parent_node && parent_node.nodeName != "A") {
+    while (parent_node && parent_node.nodeName != "A") {
       parent_node = parent_node.parentNode;
     }
     if (parent_node) {
@@ -289,9 +290,9 @@ var drag_and_go = {
     };
   },
 
-  dragStart: function(e) {
+  dragStart: function (e) {
     if (local_options["alt_key"] == "true" && e.altKey ||
-      local_options["ctrl_key"] == "true" && e.ctrlKey) {
+        local_options["ctrl_key"] == "true" && e.ctrlKey) {
       return true;
     }
     this.in_drag = true;
@@ -311,36 +312,26 @@ var drag_and_go = {
     return false;
   },
 
-  dragOver: function(e) {
+  dragOver: function (e) {
     if (!this.in_drag) {
       return true;
     }
     if (e.preventDefault) {
-      e.preventDefault ();
+      e.preventDefault();
     }
     e.dataTransfer.effectAllowed = "copy";
     e.dataTransfer.dropEffect = "copy";
     return false;
   },
 
-  drop: function(e) {
+  drop: function (e) {
     if (!this.in_drag) {
       return true;
     }
     this.in_drag = false;
-    var d = local_options["restricted_distance"];
-    if (d >= 100) {
-      d = 99;
-    }
-    if ((e.clientX - this.start_x) * (e.clientX - this.start_x) +
-      (e.clientY - this.start_y) * (e.clientY - this.start_y) < d * d) {
-      // If the drag distrance is too small (within 16 pixels from
-      // the starting point), then no go action.
-      return true;
-    }
     var x_dir = 1;
     if (e.preventDefault) {
-      e.preventDefault ();
+      e.preventDefault();
     }
     if (e.clientX < this.start_x) {
       x_dir = -1;
@@ -355,7 +346,7 @@ var drag_and_go = {
       chrome.extension.connect().postMessage({
         message: 'drag_and_go',
         selection: this.drag_selection,
-        x_dir: x_dir, 
+        x_dir: x_dir,
         y_dir: y_dir
       });
       return false;
@@ -363,7 +354,7 @@ var drag_and_go = {
     return true;
   },
 
-  dragEnd: function(e) {
+  dragEnd: function (e) {
     this.in_drag = false;
   }
 };
@@ -387,8 +378,8 @@ function drop(e) {
 
 function mouseDown(e) {
   var use_right_button = local_options["use_right_button"] == "true";
-  if (!((use_right_button && e.button == 2) || 
-    (!use_right_button && e.button == 0))) {
+  if (!((use_right_button && e.button == 2) ||
+      (!use_right_button && e.button == 0))) {
     gesture.cancelGesture(e);
     return true;
   }
@@ -435,14 +426,14 @@ document.addEventListener('mousedown', mouseDown, false);
 document.addEventListener('mouseup', mouseUp, false);
 document.addEventListener('contextmenu', onContextMenu, true);
 
-chrome.extension.sendRequest({
+chrome.extension.sendMessage({
   message: 'get_options'
-}, function(response) {
+}, function (response) {
   local_options = response;
 });
-chrome.extension.onRequest.addListener(
-  function(request, sender, sendResponse) {
-    if (request.message == "set_options") {
-      local_options = request.options;
-    }
-  });
+chrome.extension.onMessage.addListener(
+function (request, sender, sendResponse) {
+  if (request.message == "set_options") {
+    local_options = request.options;
+  }
+});

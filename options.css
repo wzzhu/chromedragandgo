@@ -1,0 +1,66 @@
+.head {
+font-size:14px;
+padding-left:10px;
+font-weight:700;
+}
+
+.item_group {
+padding-top:5px;
+padding-left:12px;
+padding-bottom:10px;
+}
+
+.option_title {
+width:570px;
+}
+
+.title {
+height:40px;
+padding-top:10px;
+padding-left:50px;
+font-size:28px;
+font-weight:700;
+background-image:url(dragandgo_48x48.png);
+background-repeat:no-repeat;
+}
+
+.author {
+height:18px;
+padding-top:0;
+padding-left:150px;
+font-size:14px;
+font-weight:700;
+}
+
+.options {
+padding-top:5px;
+padding-bottom:5px;
+width:550px;
+bottom-margin:20px;
+}
+
+.text_input {
+border-bottom:thin solid gray;
+border-top:none;
+border-left:none;
+border-right:none;
+color:blue;
+}
+
+.query_string {
+width:550px;
+}
+
+.hint {
+padding-top:10px;
+padding-bottom:10px;
+padding-left:20px;
+visibility:hidden;
+background-color:#FFFFE0;
+color:blue;
+}
+
+.description {
+padding-left:22px;
+padding-bottom:20px;
+}
