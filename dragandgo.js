@@ -251,9 +251,7 @@ var drag_and_go = {
   // Extract the link from the given text if any.
   // Otherwise return empty string.
   getTextLink: function (text) {
-    var re = new RegExp(
-        "((http|ftp|https):\/\/|www\.)[\w\-_]+(\.[\w\-_]+)+" +
-        "([\w\-\.,@?^=%&:\/~\+#\*!]*[\w\-\.,@?^=%&:\/~\+#\*!])?");
+    var re = /((http|ftp|https):\/\/|www\.)[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:\/~\+#\*!]*[\w\-\.,@?^=%&:\/~\+#\*!])?/;
     var link = "";
     var matches = text.match(re);
     if (matches) {
@@ -308,6 +306,10 @@ var drag_and_go = {
       } else {
         return true;
       }
+    }
+    if (e && e.dataTransfer) {
+      e.dataTransfer.effectAllowed = "copy";
+      e.dataTransfer.dropEffect = "copy";
     }
     return false;
   },
