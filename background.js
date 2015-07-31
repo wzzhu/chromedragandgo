@@ -30,22 +30,21 @@ function initSettings() {
     var engine = "http://www.google.com/search?&q=";
     localStorage["search_engine"] = engine;
   }
-  
+
   if (localStorage["alt_key"] == undefined) {
     localStorage["alt_key"] = "true";
   }
-  
+
   if (localStorage["ctrl_key"] == undefined) {
     localStorage["ctrl_key"] = "true";
   }
-  
+
   if (localStorage["restricted_distance"] == undefined) {
     localStorage["restricted_distance"] = 16;
   }
-  
-  if (localStorage["enable_gesture"] == undefined) {
-    localStorage["enable_gesture"] = "true";
-  }
+
+  // Disables gesture by default.
+  localStorage["enable_gesture"] = "false";
 }
 
 initSettings();

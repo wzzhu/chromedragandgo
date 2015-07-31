@@ -1,4 +1,4 @@
-// Copyright (c) 2010-2012 Wenzhang Zhu
+// Copyright (c) 2010-2015 Wenzhang Zhu
 // Script for option page
 function notifyOptionChange(tabs) {
   for (var i = 0; i < tabs.length; ++i) {
@@ -72,7 +72,7 @@ function resetOptions() {
   input_text.value = engine;
   document.getElementById("ctrl_key").checked = true;
   document.getElementById("alt_key").checked = true;
-  document.getElementById("enable_gesture").checked = true;
+  document.getElementById("enable_gesture").checked = false;
   document.getElementById("use_right_button").checked = false;
 }
 

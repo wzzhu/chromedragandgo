@@ -19,6 +19,6 @@
     "128": "dragandgo_128x128.png"
   },
   "options_page": "options.html",
-  "version": "1.9.0.3",
+  "version": "1.9.1.0",
   "default_locale": "en"
 }
