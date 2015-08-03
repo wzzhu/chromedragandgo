@@ -44,7 +44,9 @@ function initSettings() {
   }
 
   // Disables gesture by default.
-  localStorage["enable_gesture"] = "false";
+  if (localStorage["enable_gesture"] == undefined) {
+    localStorage["enable_gesture"] = "false";
+  }
 }
 
 initSettings();
