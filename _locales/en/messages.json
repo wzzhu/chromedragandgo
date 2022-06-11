@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "Drag and Go",
+    "message": "Super Drag and Go",
     "description": "Extension name." },
 
   "extDescription": {
@@ -9,7 +9,7 @@
   },
 
   "option_title": {
-    "message": "Chrome Drag and Go Options"
+    "message": "Super Drag and Go"
   },
 
   "option_copyright": {
@@ -44,10 +44,6 @@
     "message": "CTRL key is pressed"
   },
 
-  "option_enable_gesture": {
-    "message": "Support 6 most frequently used mouse gestures."
-  },
-
   "option_gesture_left": {
     "message": "Back"
   },
@@ -71,7 +67,7 @@
   "option_gesture_down": {
     "message": "Scroll down to bottom"
   },
- 
+
   "option_save": {
     "message": "Save",
     "description": "Button text to save the options"

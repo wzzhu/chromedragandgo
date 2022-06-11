@@ -44,10 +44,6 @@
     "message": "按下CTRL鍵"
   },
 
-  "option_enable_gesture": {
-    "message": "支持6個常用鼠標手勢。"
-  },
-
   "option_gesture_left": {
     "message": "向後"
   },
@@ -71,7 +67,7 @@
   "option_gesture_down": {
     "message": "滾動至底部"
   },
- 
+
   "option_save": {
     "message": "保存設置",
     "description": "Button text to save the options"

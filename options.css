@@ -1,23 +1,36 @@
+html, body {
+    height: 100%;
+}
+
+html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+}
+
 .head {
-font-size:14px;
+font-size:18px;
 padding-left:10px;
 font-weight:700;
 }
 
 .item_group {
 padding-top:5px;
-padding-left:12px;
+padding-left:16px;
 padding-bottom:10px;
 }
 
 .option_title {
-width:570px;
+width:600px;
 }
 
 .title {
 height:40px;
-padding-top:10px;
-padding-left:50px;
+padding-left:100px;
 font-size:28px;
 font-weight:700;
 background-image:url(dragandgo_48x48.png);
@@ -27,7 +40,7 @@ background-repeat:no-repeat;
 .author {
 height:18px;
 padding-top:0;
-padding-left:150px;
+padding-left:120px;
 font-size:14px;
 font-weight:700;
 }
@@ -35,8 +48,8 @@ font-weight:700;
 .options {
 padding-top:5px;
 padding-bottom:5px;
-width:550px;
-bottom-margin:20px;
+width:800px;
+margin-bottom:20px;
 }
 
 .text_input {

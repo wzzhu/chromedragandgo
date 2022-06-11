@@ -1,46 +1,53 @@
 <html>
-  <head><title>Drag and Go Extension Options</title></head>
-  <link href="options.css" rel="stylesheet" type="text/css">
-  <script type="text/javascript" src="options.js"></script>
-  <body class="body">
-    <div class="option_title">
-      <div class="title" id="title"></div>
-      <div class="author" >&copy; 2009 - 2099
-      <span id="author"></span>
-      <a href="http://e-intuit.hk">E-Intuit Limited</a>
-      </div>
+
+<head>
+  <title>Super Drag and Go Chrome Extension</title>
+</head>
+<link href="options.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="options.js"></script>
+
+<body class="body">
+  <div class="option_title">
+    <div class="title" id="title"></div>
+    <div class="author">&copy; 2009 - 2099
+      <a href="https://github.com/wzzhu"> <span id="author"></span></a>
     </div>
-    <div class="options">
-      <div class="head" id="search_engine_title"></div>
-      <div class="item_group">
-        <input type="text" class="text_input query_string" id="search_engine"
-               size=80></div>
-      <div class="head" id="disable_drag"></div>
-      <div class="item_group">
-          <input type="checkbox" id="alt_key" value="alt_key">
-          <span id="alt_key_label"></span><br/>
-          <input type="checkbox" id="ctrl_key" value="ctrl_key">
-          <span id="ctrl_key_label"></span>
-      </div>
-      <div class="head" id="gesture_title"></div>
-      <div class="item_group">
-          <input type="checkbox" id="use_right_button" value="use_right_button">
-          <span id="use_right_button_label"></span><br/>
-          <input type="checkbox" id="enable_gesture" value="enable_gesture">
-          <span id="enable_gesture_label"></span>
-          <div class="description">
-          <b>&larr;</b> <span id="left"></span><br/>
-          <b>&rarr;</b> <span id="right"></span><br/>
-          <b>&uarr;&darr;</b> <span id="up_down"></span><br/>
-          <b>&darr;&rarr;</b> <span id="down_right"></span><br/>
-          <b>&uarr;</b> <span id="up"></span><br/>
-          <b>&darr;</b> <span id="down"></span><br/>
-          </div>
-      </div>
+  </div>
+  <div class="options">
+    <div class="head" id="search_engine_title"></div>
+    <div class="item_group">
+      <input type="text" class="text_input query_string" id="search_engine" size=80>
     </div>
-    <div class="head">
-      <button id="save"></button>
-      <button id="reset"></button></div>
-    <div class="hint" id="hint"></div>
-  </body>
+    <div class="head" id="disable_drag"></div>
+    <div class="item_group">
+      <input type="checkbox" id="alt_key" value="alt_key">
+      <span id="alt_key_label"></span><br />
+      <input type="checkbox" id="ctrl_key" value="ctrl_key">
+      <span id="ctrl_key_label"></span>
+    </div>
+    <div class="head" id="gesture_title"></div>
+    <div class="item_group">
+      <input type="checkbox" id="use_right_button" value="use_right_button">
+      <span id="use_right_button_label"></span><br />
+      <input type="checkbox" id="left_gesture" value="left_gesture">
+      <b>&larr;</b> <span id="left"></span><br />
+      <input type="checkbox" id="right_gesture" value="right_gesture">
+      <b>&rarr;</b> <span id="right"></span><br />
+      <input type="checkbox" id="up_down_gesture" value="up_down_gesture">
+      <b>&uarr;&darr;</b> <span id="up_down"></span><br />
+      <input type="checkbox" id="down_right_gesture" value="down_right_gesture">
+      <b>&darr;&rarr;</b> <span id="down_right"></span><br />
+      <input type="checkbox" id="up_gesture" value="up_gesture">
+      <b>&uarr;</b> <span id="up"></span><br />
+      <input type="checkbox" id="down_gesture" value="down_gesture">
+      <b>&darr;</b> <span id="down"></span><br />
+    </div>
+  </div>
+  <div class="head">
+    <button id="save"></button>
+    <button id="reset"></button>
+  </div>
+  <div class="hint" id="hint"></div>
+</body>
+
 </html>
