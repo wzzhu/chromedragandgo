@@ -56,12 +56,12 @@ function restoreOptions () {
     document.getElementById('use_right_button').checked = localStorage['use_right_button']
 
     let gesture = localStorage['gesture']
-    document.getElementById('left_gesture').checked = gesture & LEFT == LEFT
-    document.getElementById('right_gesture').checked = gesture & RIGHT == RIGHT
-    document.getElementById('up_down_gesture').checked = gesture & UP_DOWN == UP_DOWN
-    document.getElementById('down_right_gesture').checked = gesture & DOWN_RIGHT == DOWN_RIGHT
-    document.getElementById('up_gesture').checked = gesture & UP == UP
-    document.getElementById('down_gesture').checked = gesture & DOWN == DOWN
+    document.getElementById('left_gesture').checked = gesture & (1 << LEFT) == (1 << LEFT)
+    document.getElementById('right_gesture').checked = gesture & (1 << RIGHT) == (1 << RIGHT)
+    document.getElementById('up_down_gesture').checked = gesture & (1 << UP_DOWN) == (1 << UP_DOWN)
+    document.getElementById('down_right_gesture').checked = gesture & (1 << DOWN_RIGHT) == (1 << DOWN_RIGHT)
+    document.getElementById('up_gesture').checked = gesture & (1 << UP) == (1 << UP)
+    document.getElementById('down_gesture').checked = gesture & (1 << DOWN) == (1 << DOWN)
   })
 }
 
