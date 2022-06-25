@@ -23,6 +23,6 @@
     "128": "dragandgo_128x128.png"
   },
   "options_page": "options.html",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "default_locale": "en"
 }
