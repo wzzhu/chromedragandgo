@@ -221,11 +221,14 @@ let drag_and_go = {
   // Extract the link from the given text if any.
   // Otherwise return empty string.
   getTextLink: function (text) {
-    let re = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+    let re = /((http|ftp|https|file):\/\/|www\.)[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:\/~\+#\*!]*[\w\-\.,@?^=%&:\/~\+#\*!])?/
     let link = ''
     let matches = text.match(re)
     if (matches) {
       link = matches[0]
+      if (matches.length <= 2 || matches[2] != 'http' && matches[2] != 'https' && matches[2] != 'ftp' && matches[2] != 'file') {
+        link = 'https://' + link
+      }
     }
     return link
   },

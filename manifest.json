@@ -8,10 +8,10 @@
   ],
   "content_scripts": [ {
     "js": [ "dragandgo.js" ],
-    "matches": [ "http://*/*", "https://*/*", "ftp://*/*" ],
+    "matches": ["<all_urls>"],
     "all_frames": true,
     "permissions": [
-      "storage"
+      "storage", "cookies", "<all_urls>"
     ],
       "run_at": "document_start"
   } ],
@@ -23,6 +23,6 @@
     "128": "dragandgo_128x128.png"
   },
   "options_page": "options.html",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "default_locale": "en"
 }
