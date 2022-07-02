@@ -10,6 +10,7 @@ let UP_DOWN = 2
 let DOWN_RIGHT = 3
 let UP = 4
 let DOWN = 5
+let GOOGLE = 'https://www.google.com/search?q=';
 function saveOptions () {
   let engine = document.getElementById('search_engine').value
   chrome.storage.sync.set({'search_engine': engine})
@@ -48,7 +49,7 @@ function restoreOptions () {
   chrome.storage.sync.get(['search_engine', 'alt_key', 'ctrl_key', 'gesture', 'use_right_button'], function (localStorage) {
     let engine = localStorage['search_engine']
     if (!engine) {
-      engine = 'http://www.google.com/search?&q='
+      engine = GOOGLE
     }
     document.getElementById('search_engine').value = engine
     document.getElementById('alt_key').checked = localStorage['alt_key']
@@ -67,7 +68,7 @@ function restoreOptions () {
 
 function resetOptions () {
   let input_text = document.getElementById('search_engine')
-  input_text.value = 'http://www.google.com/search?&q='
+  input_text.value = GOOGLE
   document.getElementById('ctrl_key').checked = true
   document.getElementById('alt_key').checked = true
   document.getElementById('use_right_button').checked = false

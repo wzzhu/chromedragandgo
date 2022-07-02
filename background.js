@@ -6,7 +6,7 @@ function tabAction (tab, drag_data) {
   let fg = (drag_data.y_dir == 1)
   if (drag_data.selection.type == 'text') {
     chrome.storage.sync.get(['search_engine'], function (result) {
-      let link = result['search_engine'] + drag_data.selection.data
+      let link = result['search_engine'] + encodeURIComponent(drag_data.selection.data)
       chrome.tabs.create({url: link, active: fg, index: new_idx})
     })
   } else {
