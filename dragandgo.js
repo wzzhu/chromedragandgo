@@ -5,27 +5,27 @@
 // and drag.
 var localOptions = {}
 
-function Canvas () {
-  this.html_canvas = document.createElement('canvas')
-  this.ctx = this.html_canvas.getContext('2d')
-  this.setCanvasStyle = function (stroke_style, fill_style, line_width) {
-    this.html_canvas.setAttribute('width', window.innerWidth + 'px')
-    this.html_canvas.setAttribute('height', window.innerHeight + 'px')
-    this.html_canvas.setAttribute(
+function canvas() {
+  this.htmlCanvas = document.createElement('canvas')
+  this.ctx = this.htmlCanvas.getContext('2d')
+  this.setCanvasStyle = function (strokeStyle, fillStyle, lineWidth) {
+    this.htmlCanvas.setAttribute('width', window.innerWidth + 'px')
+    this.htmlCanvas.setAttribute('height', window.innerHeight + 'px')
+    this.htmlCanvas.setAttribute(
       'style',
       'z-index:100;position:fixed;top:0px;left:0px')
-    this.ctx.fillStyle = fill_style
-    this.ctx.strokeStyle = stroke_style
-    this.ctx.lineWidth = line_width
+    this.ctx.fillStyle = fillStyle
+    this.ctx.strokeStyle = strokeStyle
+    this.ctx.lineWidth = lineWidth
     this.ctx.save()
   }
 
-  this.showCanvas = function (x, y, parent_node) {
-    if (!parent_node) {
+  this.showCanvas = function (x, y, parent) {
+    if (!parent) {
       return
     }
-    if (parent_node.lastChild != this.html_canvas) {
-      parent_node.appendChild(this.html_canvas)
+    if (parent.lastChild != this.htmlCanvas) {
+      parent.appendChild(this.htmlCanvas)
       this.setCanvasStyle('blue', 'white', 5)
     }
     this.ctx.beginPath()
@@ -42,123 +42,143 @@ function Canvas () {
   }
 
   this.hasCanvas = function () {
-    return (this.html_canvas.parentNode &&
-      this.html_canvas.parentNode.lastChild == this.html_canvas)
+    return (this.htmlCanvas.parentNode &&
+      this.htmlCanvas.parentNode.lastChild == this.htmlCanvas)
   }
 
   this.hideCanvas = function () {
-    if (this.html_canvas.parentNode &&
-      this.html_canvas.parentNode.lastChild == this.html_canvas) {
-      this.html_canvas.parentNode.removeChild(this.html_canvas)
+    if (this.htmlCanvas.parentNode &&
+      this.htmlCanvas.parentNode.lastChild == this.htmlCanvas) {
+      this.htmlCanvas.parentNode.removeChild(this.htmlCanvas)
     }
   }
 }
 
 var gesture = {
-  in_gesture: false,
-  should_close_context_menu: false,
+  inGesture: false,
+  shouldCloseContextMenu: false,
   seq: '', // Gesture sequence
-  last_pos: {
+  lastPos: {
     x: -1,
     y: -1
   }, // Last mouse position
-  start_time: 0,
+  startTime: 0,
   beginGesture: function (e) {
-    this.in_gesture = true
+    this.inGesture = true
     this.seq = ''
-    this.last_pos = {
+    this.lastPos = {
       x: e.clientX,
       y: e.clientY
     }
-    this.start_time = new Date().getTime()
+    this.startTime = new Date().getTime()
     return false
   },
-  canvas: new Canvas(),
+  canvas: new canvas(),
+
+  isValidGesturePrefix: function (seq) {
+    let g = localOptions['gesture']
+    return this.checkAction(g, 0) && seq == "L" ||
+      this.checkAction(g, 1) && seq == "R" ||
+      this.checkAction(g, 2) && seq == "U" ||
+      this.checkAction(g, 3) && seq == "D" ||
+      this.checkAction(g, 4) && seq == "U" ||
+      this.checkAction(g, 5) && seq == "D"
+  },
 
   moveGesture: function (e) {
-    if (!this.in_gesture) {
+    if (!this.inGesture) {
       return true
     }
-    if (new Date().getTime() - this.start_time < 300) {
-      // Wait for dragStart before some us time passes.
+    if (new Date().getTime() - this.startTime < 300) {
+      // Wait for dragStart for 300us
       return true
     }
     let range = null
     if (window.getSelection().rangeCount > 0) {
       range = window.getSelection().getRangeAt(0)
     }
-    let use_right_button = localOptions['use_right_button']
-    if (!use_right_button && !this.canvas.hasCanvas() && range &&
+    let useRightButton = localOptions['use_right_button']
+    if (!useRightButton && !this.canvas.hasCanvas() && range &&
       range.startContainer == range.endContainer &&
       (range.startContainer.nodeName == '#text' &&
-      range.startOffset < range.startContainer.length &&
-      range.endOffset < range.endContainer.length ||
-      range.startOffset == range.endOffset)) {
+        range.startOffset < range.startContainer.length &&
+        range.endOffset < range.endContainer.length ||
+        range.startOffset == range.endOffset)) {
       this.cancelGesture(e)
       return true
     }
-    this.canvas.showCanvas(this.last_pos.x, this.last_pos.y, document.body)
+    this.canvas.showCanvas(this.lastPos.x, this.lastPos.y, document.body)
+    this.collectGestures(e)
     if (this.seq.length > 3) {
       this.cancelGesture()
-      window.getSelection().empty()
       return true
     }
-    this.collectGestures(e)
     window.getSelection().empty()
-    this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, false)
+    this.canvas.showLineTo(this.lastPos.x, this.lastPos.y, false)
     return false
   },
 
-  collectGestures: function (e) {
-    if (this.last_pos.x < 0 || this.last_pos.y < 0) {
-      this.last_pos = {
+  checkGesture: function (e) {
+    if (this.lastPos.x < 0 || this.lastPos.y < 0) {
+      this.lastPos = {
         x: e.clientX,
         y: e.clientY
       }
     } else {
-      let dx = e.clientX - this.last_pos.x
-      let dy = e.clientY - this.last_pos.y
-      if (dx * dx + dy * dy < 256) {
+      let dx = e.clientX - this.lastPos.x
+      let dy = e.clientY - this.lastPos.y
+      if (dx * dx < 25 && dy * dy < 25) {
         // Ignore short distance.
-        return false
+        return ""
       }
-      let new_gesture
+      let newGesture
       if (Math.abs(dx) > Math.abs(dy)) {
         if (dx > 0) {
-          new_gesture = 'R'
+          newGesture = 'R'
         } else {
-          new_gesture = 'L'
+          newGesture = 'L'
         }
       } else {
         if (dy > 0) {
-          new_gesture = 'D'
+          newGesture = 'D'
         } else {
-          new_gesture = 'U'
+          newGesture = 'U'
         }
       }
-      if (this.seq.length <= 0 ||
-        this.seq.substr(this.seq.length - 1, 1) != new_gesture) {
-        this.seq = this.seq + new_gesture
-      }
+      return newGesture
     }
-    this.last_pos = {
+  },
+
+  collectGestures: function (e) {
+    let newGesture = this.checkGesture(e)
+    if (newGesture == "") {
+      return false
+    }
+    if (this.seq.length == 0 && !this.isValidGesturePrefix(newGesture)) {
+      return false
+    }
+    if (this.seq.length <= 0 ||
+      this.seq.substring(this.seq.length - 1) != newGesture) {
+      this.seq = this.seq + newGesture
+    }
+    this.lastPos = {
       x: e.clientX,
       y: e.clientY
     }
-    return false
+    return true
   },
 
   endGesture: function (e) {
-    if (!this.in_gesture) {
+    if (!this.inGesture) {
       return true
     }
-    this.in_gesture = false
+    this.inGesture = false
     this.collectGestures(e)
     if (this.seq != '') {
-      this.canvas.showLineTo(this.last_pos.x, this.last_pos.y, true)
+      this.canvas.showLineTo(this.lastPos.x, this.lastPos.y, true)
       if (this.takeAction(this.seq)) {
         window.getSelection().empty()
-        this.should_close_context_menu = true
+        this.shouldCloseContextMenu = true
       }
       this.seq = ''
       this.canvas.hideCanvas()
@@ -167,7 +187,7 @@ var gesture = {
       }
     }
     document.removeEventListener('mousemove', mouseMove, false)
-    this.last_pos = {
+    this.lastPos = {
       x: -1,
       y: -1
     }
@@ -175,33 +195,34 @@ var gesture = {
   },
 
   cancelGesture: function (_e) {
-    this.in_gesture = false
+    this.inGesture = false
     this.canvas.hideCanvas()
   },
 
+  checkAction: function (g, bf) {
+    return (g & (1 << bf)) == (1 << bf)
+  },
+
   takeAction: function (seq) {
-    let checkAction = function (g, bf) {
-      return (g & (1 << bf)) == (1 << bf)
-    }
     let gesture = localOptions['gesture']
-    if (this.seq == 'L' && checkAction(gesture, 0)) {
+    if (this.seq == 'L' && this.checkAction(gesture, 0)) {
       history.back()
       return true
-    } else if (this.seq == 'R' && checkAction(gesture, 1)) {
+    } else if (this.seq == 'R' && this.checkAction(gesture, 1)) {
       history.forward()
       return true
-    } else if (this.seq == 'UD' && checkAction(gesture, 2)) {
+    } else if (this.seq == 'UD' && this.checkAction(gesture, 2)) {
       location.reload(true)
       return true
-    } else if (this.seq == 'DR' && checkAction(gesture, 3)) {
+    } else if (this.seq == 'DR' && this.checkAction(gesture, 3)) {
       chrome.runtime.connect().postMessage({
         message: 'closeMe'
       })
       return true
-    } else if (this.seq == 'U' && checkAction(gesture, 4)) {
+    } else if (this.seq == 'U' && this.checkAction(gesture, 4)) {
       window.scroll(0, 0)
       return true
-    } else if (this.seq == 'D' && checkAction(gesture, 5)) {
+    } else if (this.seq == 'D' && this.checkAction(gesture, 5)) {
       window.scroll(0, document.body.scrollHeight)
       return true
     }
@@ -209,14 +230,14 @@ var gesture = {
   }
 }
 
-let drag_and_go = {
-  in_drag: false,
-  drag_selection: {
+let dragAndGo = {
+  inDrag: false,
+  dragSelection: {
     type: 'text',
     data: ''
   },
-  start_x: -1,
-  start_y: -1,
+  startX: -1,
+  startY: -1,
 
   // Extract the link from the given text if any.
   // Otherwise return empty string.
@@ -235,19 +256,19 @@ let drag_and_go = {
 
   getDragSelection: function (e) {
     let data
-    let data_type = 'text'
+    let dataType = 'text'
     let selection = window.getSelection()
-    let parent_node = e.srcElement
-    while (parent_node && parent_node.nodeName != 'A') {
-      parent_node = parent_node.parentNode
+    let parent = e.srcElement
+    while (parent && parent.nodeName != 'A') {
+      parent = parent.parentNode
     }
-    if (parent_node) {
-      if (parent_node.href.substr(0, 11) != 'javascript:') {
-        data_type = 'link'
-        data = parent_node.href
+    if (parent) {
+      if (parent.href.substr(0, 11) != 'javascript:') {
+        dataType = 'link'
+        data = parent.href
       }
     } else if (e.srcElement.nodeName == 'IMG') {
-      data_type = 'img'
+      dataType = 'img'
       data = e.srcElement.src
     } else {
       data = e.dataTransfer.getData('Text')
@@ -256,7 +277,7 @@ let drag_and_go = {
       }
     }
     return {
-      'type': data_type,
+      'type': dataType,
       'data': data
     }
   },
@@ -266,16 +287,16 @@ let drag_and_go = {
       localOptions['ctrl_key'] && e.ctrlKey) {
       return true
     }
-    this.in_drag = true
-    this.start_x = e.clientX
-    this.start_y = e.clientY
-    this.drag_selection = this.getDragSelection(e)
-    if (this.drag_selection.type == 'text') {
-      let link = this.getTextLink(this.drag_selection.data)
+    this.inDrag = true
+    this.startX = e.clientX
+    this.startY = e.clientY
+    this.dragSelection = this.getDragSelection(e)
+    if (this.dragSelection.type == 'text') {
+      let link = this.getTextLink(this.dragSelection.data)
       if (link != '') {
         // Update the selection from text type to link
-        this.drag_selection.type = 'link'
-        this.drag_selection.data = link
+        this.dragSelection.type = 'link'
+        this.dragSelection.data = link
       } else {
         return true
       }
@@ -288,7 +309,7 @@ let drag_and_go = {
   },
 
   dragOver: function (e) {
-    if (!this.in_drag) {
+    if (!this.inDrag) {
       return true
     }
     if (e.preventDefault) {
@@ -300,29 +321,29 @@ let drag_and_go = {
   },
 
   drop: function (e) {
-    if (!this.in_drag) {
+    if (!this.inDrag) {
       return true
     }
-    this.in_drag = false
-    let x_dir = 1
+    this.inDrag = false
+    let xDir = 1
     if (e.preventDefault) {
       e.preventDefault()
     }
-    if (e.clientX < this.start_x) {
-      x_dir = -1
+    if (e.clientX < this.startX) {
+      xDir = -1
     }
-    let y_dir = 1
-    if (e.clientY < this.start_y) {
-      y_dir = -1
+    let yDir = 1
+    if (e.clientY < this.startY) {
+      yDir = -1
     }
-    this.start_x = -1
-    this.start_y = -1
-    if (this.drag_selection.data) {
+    this.startX = -1
+    this.startY = -1
+    if (this.dragSelection.data) {
       chrome.runtime.connect().postMessage({
-        message: 'drag_and_go',
-        selection: this.drag_selection,
-        x_dir: x_dir,
-        y_dir: y_dir
+        message: 'dragAndGo',
+        selection: this.dragSelection,
+        xDir: xDir,
+        yDir: yDir
       })
       return false
     }
@@ -330,35 +351,35 @@ let drag_and_go = {
   },
 
   dragEnd: function (_e) {
-    this.in_drag = false
+    this.inDrag = false
   }
 }
 
-function dragStart (e) {
+function dragStart(e) {
   gesture.cancelGesture(e)
-  return drag_and_go.dragStart(e)
+  return dragAndGo.dragStart(e)
 }
 
-function dragOver (e) {
-  return drag_and_go.dragOver(e)
+function dragOver(e) {
+  return dragAndGo.dragOver(e)
 }
 
-function dragEnd (e) {
-  return drag_and_go.dragEnd(e)
+function dragEnd(e) {
+  return dragAndGo.dragEnd(e)
 }
 
-function drop (e) {
-  return drag_and_go.drop(e)
+function drop(e) {
+  return dragAndGo.drop(e)
 }
 
-function mouseDown (e) {
-  let use_right_button = localOptions['use_right_button']
-  if (!((use_right_button && e.button == 2) ||
-    (!use_right_button && e.button == 0))) {
+function mouseDown(e) {
+  let useRightButton = localOptions['use_right_button']
+  if (!((useRightButton && e.button == 2) ||
+    (!useRightButton && e.button == 0))) {
     gesture.cancelGesture(e)
     return true
   }
-  if (localOptions['gesture'] > 0 && !e.ctrlKey && !e.altKey && !gesture.in_gesture) {
+  if (localOptions['gesture'] > 0 && !e.ctrlKey && !e.altKey && !gesture.inGesture) {
     document.addEventListener('mousemove', mouseMove, false)
     return gesture.beginGesture(e)
   } else {
@@ -367,25 +388,25 @@ function mouseDown (e) {
   }
 }
 
-function mouseUp (e) {
+function mouseUp(e) {
   if (localOptions['gesture'] > 0) {
     return gesture.endGesture(e)
   }
 }
 
-function mouseMove (e) {
-  if (!drag_and_go.in_drag && localOptions['gesture'] > 0) {
+function mouseMove(e) {
+  if (!dragAndGo.inDrag && localOptions['gesture'] > 0) {
     return gesture.moveGesture(e)
   }
   document.removeEventListener('mousemove', mouseMove, false)
   return true
 }
 
-function onContextMenu (e) {
-  if (localOptions['use_right_button'] && localOptions['gesture'] > 0 && gesture.should_close_context_menu) {
+function onContextMenu(e) {
+  if (localOptions['use_right_button'] && localOptions['gesture'] > 0 && gesture.shouldCloseContextMenu) {
     e.preventDefault()
   }
-  gesture.should_close_context_menu = false
+  gesture.shouldCloseContextMenu = false
 }
 
 document.addEventListener('dragstart', dragStart, false)
@@ -396,7 +417,7 @@ document.addEventListener('mousedown', mouseDown, false)
 document.addEventListener('mouseup', mouseUp, false)
 document.addEventListener('contextmenu', onContextMenu, true)
 
-function loadOptions () {
+function loadOptions() {
   chrome.storage.sync.get(['search_engine', 'alt_key', 'ctrl_key', 'restricted_distance', 'gesture', 'use_right_button'], function (localStorage) {
     localOptions = {
       alt_key: localStorage['alt_key'],
@@ -411,4 +432,5 @@ function loadOptions () {
 
 loadOptions()
 chrome.storage.onChanged.addListener((_changes, _area) => {
-  loadOptions()})
+  loadOptions()
+})

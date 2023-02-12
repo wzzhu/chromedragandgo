@@ -6,15 +6,23 @@
   "permissions": [
     "storage"
   ],
-  "content_scripts": [ {
-    "js": [ "dragandgo.js" ],
-    "matches": ["<all_urls>"],
-    "all_frames": true,
-    "permissions": [
-      "storage", "cookies", "<all_urls>"
-    ],
+  "content_scripts": [
+    {
+      "js": [
+        "dragandgo.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ],
+      "all_frames": true,
+      "permissions": [
+        "storage",
+        "cookies",
+        "<all_urls>"
+      ],
       "run_at": "document_start"
-  } ],
+    }
+  ],
   "description": "__MSG_extDescription__",
   "name": "__MSG_extName__",
   "icons": {
@@ -23,6 +31,6 @@
     "128": "dragandgo_128x128.png"
   },
   "options_page": "options.html",
-  "version": "2.0.3",
+  "version": "2.0.5",
   "default_locale": "en"
 }
