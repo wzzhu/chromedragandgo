@@ -109,7 +109,7 @@ var gesture = {
     }
     this.canvas.showCanvas(this.lastPos.x, this.lastPos.y, document.body)
     this.collectGestures(e)
-    if (this.seq.length > 3) {
+    if (this.seq.length > 3 || this.seq.length == 0) {
       this.cancelGesture()
       return true
     }

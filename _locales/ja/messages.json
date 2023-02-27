@@ -1,0 +1,65 @@
+{
+  "extName": {
+    "message": "スーパードラッグアンドゴー",
+    "description": "拡張機能名。"
+  },
+  "extDescription": {
+    "message": "6 つの最も一般的に使用されるマウス ジェスチャを備えたスーパー ドラッグ。",
+    "description": "説明."
+  },
+  "option_title": {
+    "message": "Chrome スーパー ドラッグ オプション"
+  },
+  "option_copyright": {
+    "message": "朱文章"
+  },
+  "option_search_engine_title": {
+    "message": "検索エンジン"
+  },
+  "option_search_engine": {
+    "message": "検索エンジンのクエリ文字列"
+  },
+  "option_disable_drag": {
+    "message": "次のいずれかの条件を満たす場合,スーパードラッグは無効です"
+  },
+  "option_gesture_title": {
+    "message": "マウスジェスチャー"
+  },
+  "option_right_button": {
+    "message": "ジェスチャーはマウスの右ボタンを使用します (チェックされていない場合,デフォルトはマウスの左ボタンです)"
+  },
+  "option_alt_key": {
+    "message": "Alt キーを押してください"
+  },
+  "option_ctrl_key": {
+    "message": "CTRL キーを押してください"
+  },
+  "option_gesture_left": {
+    "message": "戻る"
+  },
+  "option_gesture_right": {
+    "message": "転送"
+  },
+  "option_gesture_up_down": {
+    "message": "更新"
+  },
+  "option_gesture_down_right": {
+    "message": "閉じる"
+  },
+  "option_gesture_up": {
+    "message": "一番上までスクロール"
+  },
+  "option_gesture_down": {
+    "message": "一番下までスクロール"
+  },
+  "option_save": {
+    "message": "設定を保存",
+    "description": "オプションを保存するためのボタン テキスト"
+  },
+  "option_reset": {
+    "message": "設定を復元"
+  },
+  "option_hint": {
+    "message": "設定を保存しました。"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "extName": {
+    "message": "Супер перетаскивание",
+    "description": "Имя расширения."
+  },
+  "extDescription": {
+    "message": "Суперперетаскивание, а также 6 наиболее часто используемых жестов.",
+    "description": "Описание."
+  },
+  "option_title": {
+    "message": "Супер перетаскивание"
+  },
+  "option_copyright": {
+    "message": "Вэньчжан Чжу"
+  },
+  "option_search_engine_title": {
+    "message": "Поисковая система"
+  },
+  "option_search_engine": {
+    "message": "Строка запроса поисковой системы"
+  },
+  "option_disable_drag": {
+    "message": "Отключить перетаскивание, если выполняется любое из следующих условий."
+  },
+  "option_gesture_title": {
+    "message": "Жест мышью"
+  },
+  "option_right_button": {
+    "message": "Использовать правую клавишу мыши (снимите этот флажок, чтобы по умолчанию использовать левую клавишу мыши)."
+  },
+  "option_alt_key": {
+    "message": "Нажата клавиша ALT"
+  },
+  "option_ctrl_key": {
+    "message": "Нажата клавиша CTRL"
+  },
+  "option_gesture_left": {
+    "message": "Назад"
+  },
+  "option_gesture_right": {
+    "message": "Переслать"
+  },
+  "option_gesture_up_down": {
+    "message": "Обновить"
+  },
+  "option_gesture_down_right": {
+    "message": "Закрыть"
+  },
+  "option_gesture_up": {
+    "message": "Прокрутить вверх"
+  },
+  "option_gesture_down": {
+    "message": "Прокрутите вниз"
+  },
+  "option_save": {
+    "message": "Сохранить",
+    "description": "Текст кнопки для сохранения параметров"
+  },
+  "option_reset": {
+    "message": "Сбросить"
+  },
+  "option_hint": {
+    "message": "Параметры сохранены."
+  }
+}

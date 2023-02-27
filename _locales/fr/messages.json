@@ -1,0 +1,65 @@
+{
+  "extName": {
+    "message": "Super Drag and Go",
+    "description": "Nom de l'extension.."
+  },
+  "extDescription": {
+    "message": "Super Drag and Go, plus 6 gestes les plus fréquemment utilisés.",
+    "description": "Description."
+  },
+  "option_title": {
+    "message": "Super Drag and Go"
+  },
+  "option_copyright": {
+    "message": "Wenzhang Zhu"
+  },
+  "option_search_engine_title": {
+    "message": "Moteur de recherche"
+  },
+  "option_search_engine": {
+    "message": "Chaîne de requête du moteur de recherche"
+  },
+  "option_disable_drag": {
+    "message": "Désactivez le glisser-déposer si l'une des conditions suivantes est satisfaite."
+  },
+  "option_gesture_title": {
+    "message": "Geste de souris"
+  },
+  "option_right_button": {
+    "message": "Utiliser le bouton droit de la souris (décochez cette option pour utiliser le bouton gauche de la souris par défaut)."
+  },
+  "option_alt_key": {
+    "message": "La touche ALT est enfoncée"
+  },
+  "option_ctrl_key": {
+    "message": "La touche CTRL est enfoncée"
+  },
+  "option_gesture_left": {
+    "message": "Retour"
+  },
+  "option_gesture_right": {
+    "message": "Transférer"
+  },
+  "option_gesture_up_down": {
+    "message": "Actualiser"
+  },
+  "option_gesture_down_right": {
+    "message": "Fermer"
+  },
+  "option_gesture_up": {
+    "message": "Faire défiler vers le haut"
+  },
+  "option_gesture_down": {
+    "message": "Faites défiler vers le bas"
+  },
+  "option_save": {
+    "message": "Enregistrer",
+    "description": "Texte du bouton pour enregistrer les options"
+  },
+  "option_reset": {
+    "message": "Réinitialiser"
+  },
+  "option_hint": {
+    "message": "Options enregistrées."
+  }
+}

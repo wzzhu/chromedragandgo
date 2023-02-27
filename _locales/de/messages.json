@@ -1,0 +1,65 @@
+{
+  "extName": {
+    "message": "Super Drag and Go",
+    "description": "Name der Erweiterung."
+  },
+  "extDescription": {
+    "message": "Super Drag and Go, plus 6 am häufigsten verwendete Gesten.",
+    "description": "description."
+  },
+  "Optionstitel": {
+    "message": "Super Drag and Go"
+  },
+  "option_copyright": {
+    "message": "Wenzhang Zhu"
+  },
+  "option_search_engine_title": {
+    "message": "Suchmaschine"
+  },
+  "option_search_engine": {
+    "message": "Suchmaschinen-Abfragezeichenfolge"
+  },
+  "option_disable_drag": {
+    "message": "Drag and go deaktivieren, wenn eine der folgenden Bedingungen erfüllt ist."
+  },
+  "option_gesture_title": {
+    "message": "Mausgeste"
+  },
+  "option_right_button": {
+    "message": "Rechte Maustaste verwenden (Deaktivieren Sie dies, um standardmäßig die linke Maustaste zu verwenden)."
+  },
+  "option_alt_key": {
+    "message": "ALT-Taste wurde gedrückt"
+  },
+  "option_ctrl_key": {
+    "message": "STRG-Taste ist gedrückt"
+  },
+  "option_gesture_left": {
+    "message": "Zurück"
+  },
+  "option_gesture_right": {
+    "message": "Weiterleiten"
+  },
+  "option_gesture_up_down": {
+    "message": "Aktualisieren"
+  },
+  "option_gesture_down_right": {
+    "message": "Schließen"
+  },
+  "option_gesture_up": {
+    "message": "Nach oben scrollen"
+  },
+  "option_gesture_down": {
+    "message": "Nach unten scrollen"
+  },
+  "option_save": {
+    "message": "Speichern",
+    "description": "Schaltflächentext zum Speichern der Optionen"
+  },
+  "option_reset": {
+    "message": "Zurücksetzen"
+  },
+  "option_hint": {
+    "message": "Optionen gespeichert."
+  }
+}
